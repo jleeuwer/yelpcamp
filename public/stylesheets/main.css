@@ -1,0 +1,40 @@
+body {
+    background: lightyellow;
+}
+
+.thumbnail img {
+    width : 100%;
+}
+.thumbnail {
+    padding: 0;
+}
+
+#delete-form {
+    display: inline;
+}
+
+.delete-form {
+    display: inline;
+}
+
+/* Register class and @Keyframes are for flyin */
+.register {
+    animation: flyin 1.2s ease forwards;
+    opacity: 0;
+    transform: scale(2);
+    filter: blur(4px);
+  }
+  
+  @keyframes flyin {
+     to { 
+       filter: blur(0);
+       transform: scale(1);
+       opacity: 1;
+     }
+  }
+
+  /* Google Maps */
+#map {
+    height: 400px;
+    width: 100%;
+}

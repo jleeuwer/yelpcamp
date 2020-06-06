@@ -1,0 +1,173 @@
+[{
+	"_id": {
+		"$oid": "5ed23bfe70e5691a02663f19"
+	},
+	"comments": [
+		{
+			"$oid": "5ed23c2570e5691a02663f1a"
+		},
+		{
+			"$oid": "5ed268c98945c81b73ef0f45"
+		},
+		{
+			"$oid": "5ed26c0a5905581bbb38bd1d"
+		},
+		{
+			"$oid": "5ed26cbd6b0de31bc65fb909"
+		},
+		{
+			"$oid": "5ed26da81496c51bf7f04b2c"
+		},
+		{
+			"$oid": "5ed26e60742d2f1c064e9028"
+		}
+	],
+	"Name": "Nick's Spot",
+	"Image": "https://images.unsplash.com/photo-1532339142463-fd0a8979791a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
+	"Description": "This is Nick's Spot",
+	"__v": 6
+},
+{
+	"_id": {
+		"$oid": "5ed37b8497f9191edf4b8754"
+	},
+	"comments": [
+		{
+			"$oid": "5ed4bb55b08ff52e998d9073"
+		},
+		{
+			"$oid": "5ed4c346fa5bdf3008c18b98"
+		}
+	],
+	"Name": "Roy's retreat in the mountains",
+	"Image": "https://images.unsplash.com/photo-1537532244339-0a3e63bb818b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2851&q=80",
+	"Description": "Roy's place to chill",
+	"Author": {
+		"id": {
+			"$oid": "5ed37b5b97f9191edf4b8753"
+		},
+		"username": "Roy"
+	},
+	"__v": 2
+},
+{
+	"_id": {
+		"$oid": "5ed409a346e030279420325d"
+	},
+	"comments": [
+		{
+			"$oid": "5ed4bb3db08ff52e998d9071"
+		},
+		{
+			"$oid": "5ed4c06b5f7a0f2f3d73136b"
+		},
+		{
+			"$oid": "5ed4c0875f7a0f2f3d73136d"
+		},
+		{
+			"$oid": "5ed4c15a703bea2f484fcbfa"
+		},
+		{
+			"$oid": "5ed52b43623e8b362e115d56"
+		}
+	],
+	"Name": "Jan's Hangout at campground",
+	"Image": "https://images.unsplash.com/photo-1533873984035-25970ab07461?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2853&q=80",
+	"Description": "The place to relax with your friends",
+	"Author": {
+		"id": {
+			"$oid": "5ed2101ea74d6315e707aa16"
+		},
+		"username": "Jan"
+	},
+	"__v": 5,
+	"Price": "10.00"
+},
+{
+	"_id": {
+		"$oid": "5ed41da7b1295c2a31b38f77"
+	},
+	"comments": [
+		{
+			"$oid": "5ed41ec1b1295c2a31b38f78"
+		},
+		{
+			"$oid": "5ed41fca2224732a8924984e"
+		},
+		{
+			"$oid": "5ed4b7d308ff292e54dcab76"
+		},
+		{
+			"$oid": "5ed4b7e008ff292e54dcab78"
+		}
+	],
+	"Name": "Linda's Spot",
+	"Image": "https://images.unsplash.com/photo-1520824071669-892f70d8a23d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2497&q=80",
+	"Description": "Linda's relaxing spot",
+	"Author": {
+		"id": {
+			"$oid": "5ed2101ea74d6315e707aa16"
+		},
+		"username": "Jan"
+	},
+	"__v": 4
+},
+{
+	"_id": {
+		"$oid": "5ed5265f3a536035d4265bad"
+	},
+	"comments": [
+		{
+			"$oid": "5ed526df3a536035d4265bae"
+		},
+		{
+			"$oid": "5ed527bae1443935fa58515b"
+		}
+	],
+	"Name": "Linda's hangout",
+	"Image": "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "Linda favorite spot next to the G",
+	"Author": {
+		"id": {
+			"$oid": "5ed525b73a536035d4265bac"
+		},
+		"username": "Linda"
+	},
+	"__v": 2,
+	"Price": "100.00"
+},
+{
+	"_id": {
+		"$oid": "5ed53446f6631e37993a61bc"
+	},
+	"comments": [],
+	"Name": "Cool Campingground",
+	"Image": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "This a cool hanging out place for a caravan",
+	"Author": {
+		"id": {
+			"$oid": "5ed525b73a536035d4265bac"
+		},
+		"username": "Linda"
+	},
+	"__v": 0,
+	"Price": "110.00"
+},
+{
+	"_id": {
+		"$oid": "5ed5354b912cfa37bd001bc1"
+	},
+	"comments": [],
+	"Name": "Stary Stary Night",
+	"Image": "https://images.unsplash.com/photo-1487730116645-74489c95b41b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "Camping under the stars",
+	"Author": {
+		"id": {
+			"$oid": "5ed2101ea74d6315e707aa16"
+		},
+		"username": "Jan"
+	},
+	"Price": "90",
+	"__v": 0
+}]
+
