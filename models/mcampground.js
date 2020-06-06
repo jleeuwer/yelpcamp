@@ -7,9 +7,10 @@ var vCampgroundschema = new vmongoose.Schema ({
     Image           :   String,
     Description     :   String,
     Price           :   String,
-    location        :   String,
+    Location        :   String,
     Lat             :   Number,
     Lng             :   Number, 
+    CreatedAt       :   { type: Date, default: Date.now },
     Author: {
         id: {
             type: vmongoose.Schema.Types.ObjectId,
@@ -26,29 +27,3 @@ var vCampgroundschema = new vmongoose.Schema ({
 });
 
 module.exports = vmongoose.model("Campground", vCampgroundschema);
-
-var mongoose = require("mongoose");
-
-var campgroundSchema = new mongoose.Schema({
-   name: String,
-   image: String,
-   description: String,
-   location: String,
-   lat: Number,
-   lng: Number,
-   author: {
-      id: {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "User"
-      },
-      username: String
-   },
-   comments: [
-      {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "Comment"
-      }
-   ]
-});
-
-module.exports = mongoose.model("Campground", campgroundSchema);

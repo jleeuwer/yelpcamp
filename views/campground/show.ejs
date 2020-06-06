@@ -12,7 +12,7 @@
             </div>
             <!-- Map placeholder -->
             <div id="map">
-                
+
             </div>
         </div>
         <div class="col-md-9">
@@ -29,7 +29,7 @@
                     <br>
                     <p><%= campground.Description %></p>
                     <p>
-                        <em>Submitted by <%= campground.Author.username %></em>
+                        <em>Submitted by <%= campground.Author.username %>, <%= moment(campground.CreatedAt).fromNow() %></em>
                     </p>
                     <% if (vCurrentUser && campground.Author.id.equals(vCurrentUser._id)) { %>
                         <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
@@ -49,7 +49,7 @@
                         <div class="col-md-12">
                             <strong> <%=comment.Author.username %></strong> 
                             <span class="pull-right">
-                                10 days ago
+                                <%= moment(comment.CreatedAt).fromNow() %>
                             </span>
                             <p><%=comment.Text%></p>
                             <% if (vCurrentUser && comment.Author.id.equals(vCurrentUser._id)) { %>
@@ -71,8 +71,8 @@
 
 <script>
     function initMap() {
-      var lat = <%= campground.lat %>;
-      var lng = <%= campground.lng %>;
+      var lat = <%= campground.Lat %>;
+      var lng = <%= campground.Lng %>;
       var center = {lat: lat, lng: lng };
       var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 8,
@@ -80,9 +80,9 @@
           scrollwheel: false
       });
       var contentString = `
-        <strong><%= campground.name %><br />
-        <%= campground.location %></strong>
-        <p><%= campground.description %></p>
+        <strong><%= campground.Name %><br />
+        <%= campground.Location %></strong>
+        <p><%= campground.Description %></p>
       `
       var infowindow = new google.maps.InfoWindow({
         content: contentString
@@ -96,7 +96,7 @@
       });
     }
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=API-KEY-HERE&callback=initMap">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWs_qXgS7A1_tSk9aq3gAJp8hWyuEtdtc&callback=initMap">
 </script>
 
 

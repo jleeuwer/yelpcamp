@@ -4,6 +4,7 @@ const vmongoose = require("mongoose");
  
 var commentSchema = new vmongoose.Schema({
     Text: String,
+    CreatedAt:   { type: Date, default: Date.now },
     Author: {
         id: {
             type: vmongoose.Schema.Types.ObjectId,

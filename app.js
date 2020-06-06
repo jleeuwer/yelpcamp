@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const vMethodOverride = require("method-override");
 const flash = require("connect-flash");
 
+
 // Schema Setup
 var vUser = require("./models/user.js");
 
@@ -19,7 +20,7 @@ app.use(require("express-session")({
     secret: "Passat is the best car",
     resave: false,
     saveUninitialized: false,
-    cookie:{_expires : 30000}
+    cookie:{_expires : 600000000}
 }));
 app.use(vpassport.initialize());
 app.use(vpassport.session());
@@ -34,6 +35,8 @@ app.use(express.static(__dirname + "/public")); // Express public
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(vMethodOverride("_method")); // Method override for PUT
 app.use(flash()); // Flash Messages
+app.locals.moment = require('moment'); // Berekenen van verschillen tussen datums
+
 
 // Application Modules 
 var mod_comment_routes = require("./routes/comments");
