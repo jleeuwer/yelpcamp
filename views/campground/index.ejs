@@ -1,9 +1,15 @@
   <% include ../partials/header %>
 
+    <!-- Debug Code -->
+    <!-- <% if (vCurrentUser && vCurrentUser.vIsAdmin ) { %>
+      <H1>You are an admin</H1>
+    <% } %>
+    <% console.log("Huidige gebruiker " + vCurrentUser) %> -->
+
     <!-- <div class="container"> -->
       <header class="jumbotron">
           <div class="container">
-            <h1>Welcome to YelpCamp!</h1>
+            <h1><i class="fas fa-campground"></i> Welcome to YelpCamp!</h1>
             <p>View all our hand-picked campgrounds</p>      
             <p>
               <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add a new campground</a>

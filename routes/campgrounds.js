@@ -13,7 +13,7 @@ var options = {
 };
 
 // Debug
-console.log(options);
+// console.log(options);
  
 var geocoder = NodeGeocoder(options);
 

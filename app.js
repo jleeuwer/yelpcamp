@@ -1,3 +1,4 @@
+// Read the .env file 
 require('dotenv').config();
 const express = require("express");
 const app = express();
@@ -10,6 +11,7 @@ const vpassportlocalmongoose = require("passport-local-mongoose");
 const bodyParser = require("body-parser");
 const vMethodOverride = require("method-override");
 const flash = require("connect-flash");
+var testcomment = require("./testcomments");
 
 
 // Schema Setup
@@ -48,7 +50,6 @@ var mod_index_routers = require("./routes/index");
 //  Connect the model
 var envDBURL = process.env.DATABASEURL || "mongodb://localhost:27017/yelpcamp"
 vmongoose.connect(envDBURL, { useNewUrlParser: true, useUnifiedTopology: true  });
-// vseeds();
 
 // Schema Setup
 var vCampGround = require("./models/mcampground.js");
@@ -69,6 +70,14 @@ app.use("/campgrounds/:id/comments", mod_comment_routes);
 // Link to managing the API key for Google
 // https://console.cloud.google.com/apis/credentials?project=testproject-279512&supportedpurview=project
 
+// Generating test data
+// console.log ("Test data " + process.env.GENERATE_TEST_DATA);
+// Check for environment variable, set in .ENV 
+if (process.env.GENERATE_TEST_DATA === "1" ) {
+    console.log("Generating test data.....");
+    vseeds();
+    // testcomment();
+};
 
 
 // Fault route

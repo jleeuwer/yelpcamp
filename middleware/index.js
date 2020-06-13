@@ -13,7 +13,7 @@ mid_Object.checkCampgroundOwnership = function (req, res, next) {
                 res.redirect("back");
             } else {
                 // console.log(foundCampground);
-                if (foundCampground.Author.id.equals(req.user._id)) {
+                if (foundCampground.Author.id.equals(req.user._id) || req.user.vIsAdmin) {
                     next();
                 } else {
                     req.flash("error", "You don't have permission to perform this action");
@@ -34,7 +34,7 @@ mid_Object.checkCommentOwnership = function (req, res, next) {
                 res.redirect("back");
             } else {
                 // console.log(foundCampground);
-                if (foundComment.Author.id.equals(req.user._id)) {
+                if (foundComment.Author.id.equals(req.user._id) || req.user.vIsAdmin) {
                     next();
                 } else {
                     req.flash("error", "You don't have permission to perform this action");

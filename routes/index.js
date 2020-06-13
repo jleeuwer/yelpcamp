@@ -24,8 +24,14 @@ router.get("/register", function(req, res){
  });
 
 router.post("/register", function(req, res){
+    var vIsAdmin = false; // Default a user is no admin, only when he enters the correct secret code
     var vuser = new vUser({username: req.body.username});
     var vPassword = req.body.password;
+    var vadminCode = req.body.admincode;
+    if (vadminCode === 'YelpCamp') {
+        vuser.vIsAdmin = true;
+        console.log(vuser);
+    };
     vUser.register(vuser, vPassword, function(err, user) {
         if(err){
             console.log(err);

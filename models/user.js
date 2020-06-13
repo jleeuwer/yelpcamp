@@ -5,7 +5,8 @@ const vpassportlocalmongoose = require("passport-local-mongoose");
  
 var userSchema = new vmongoose.Schema({
     vUserName: String,
-    vPassword: String
+    vPassword: String,
+    vIsAdmin: {type: Boolean, default: false}
 });
 
 userSchema.plugin(vpassportlocalmongoose);
