@@ -12,21 +12,43 @@ var options = {
   formatter: null
 };
 
-// Debug
-// console.log(options);
- 
 var geocoder = NodeGeocoder(options);
+
 
 // Index Route - show all data
 router.get("/", function(req, res){
-    vCampGround.find({}, function(err, allcampGrounds) {
-        if(err){
-            req.flash("error", "There was a problem accessing the data");
-        } else {
-            // console.log (allcampGrounds);
-            res.render("campground/index.ejs", {pcampgrounds: allcampGrounds, page: 'campgrounds', vCurrentUser: req.user});
+    if (req.query.vsearch) {
+        if (process.env.DEBUG==="1") {
+            console.log("Finding campgrounds based on search pattern");
         };
-    });
+        const regex = new RegExp(vMiddleware.escapeRegex(req.query.vsearch), 'gi');
+        vCampGround.find({ Name: regex }, function(err, allcampGrounds) {
+            if(err){
+                req.flash("error", "There was a problem accessing the data");
+            } else {
+                if (allcampGrounds.length === 0 ) {
+                    req.flash("error", "No matches were found. Please try with other search criteria");
+                    res.redirect("/");
+                } else {
+                    res.render("campground/index.ejs", {pcampgrounds: allcampGrounds, page: 'campgrounds', vCurrentUser: req.user});
+                }
+            };
+        });        
+    } else {
+        if (process.env.DEBUG==="1") {
+            console.log("Finding all campgrounds");
+        };
+        vCampGround.find({}, function(err, allcampGrounds) {
+            if(err){
+                req.flash("error", "There was a problem accessing the data");
+            } else {
+                if (process.env.DEBUG==="1") {
+                    console.log(allcampGrounds);
+                };
+                res.render("campground/index.ejs", {pcampgrounds: allcampGrounds, page: 'campgrounds', vCurrentUser: req.user});
+            };
+        });
+    };
 });
 
 // New route - Show form to add campground
@@ -48,18 +70,12 @@ router.post("/", vMiddleware.IsLoggedIn , function(req, res){
 
     geocoder.geocode(req.body.Location, function (err, data) {
         if (err || !data.length) {
-            console.log(err);
-            req.flash('error', 'Invalid address');
+            req.flash('error', err.message);
             return res.redirect('back');
         }
         vlat = data[0].latitude;
         vlng = data[0].longitude;
         vlocation = data[0].formattedAddress;
-        // Debug information
-        console.log(req.body.Location);
-        console.log(vlat);
-        console.log(vlng);
-        console.log(vlocation);
 
         var newCampground = {Name: req.body.vName, Image: req.body.vUrl, Description: req.body.Description, Author: vAuthor, Price: req.body.Price, Location: vlocation, Lat: vlat, Lng: vlng};
 
@@ -67,12 +83,10 @@ router.post("/", vMiddleware.IsLoggedIn , function(req, res){
             if(err){
                 req.flash("error", "There was a problem accessing the data");
             } else {
-                // console.log(newlycreatedCampground);
                 res.redirect("/campgrounds");
             };
         });
     });
-// vcampGrounds.push(newCampground);
 });
 
 // Show Route - Show data of one instance from the dataset
@@ -82,7 +96,6 @@ router.get("/:id", vMiddleware.IsLoggedIn , function (req, res) {
             req.flash("error", "There was a problem accessing the data");
             res.redirect("/campgrounds");
         } else {
-            // console.log(foundCampground);
             res.render("campground/show.ejs", {campground: foundCampground});
         };
     });
@@ -95,7 +108,6 @@ router.get("/:id/edit", vMiddleware.checkCampgroundOwnership, function(req, res)
             req.flash("error", "There was a problem accessing the data");
             res.redirect("/campgrounds");
         } else {
-            // console.log(foundCampground);
             res.render("campground/edit", {campground: foundCampground});
         };
     });
@@ -103,8 +115,6 @@ router.get("/:id/edit", vMiddleware.checkCampgroundOwnership, function(req, res)
 
 // Update Campground Route
 router.put("/:id", function (req, res) {
-    console.log("Saving");
-    console.log(req.body.updCampground);
     // findByIdAndUpdate has been depracated, so added new function
     // vCampGround.findByIdAndUpdate(req.params.id, req.body.updCampground, function (err, vCampGround) {
     geocoder.geocode(req.body.updCampground.Location, function (err, data) {
@@ -116,11 +126,6 @@ router.put("/:id", function (req, res) {
         req.body.updCampground.Lat = data[0].latitude;
         req.body.updCampground.Lng = data[0].longitude;
         req.body.updCampground.Location = data[0].formattedAddress;
-        // Debug info
-        console.log(req.body.updCampground.Location);
-        console.log(req.body.updCampground.Lat);
-        console.log(req.body.updCampground.Lng);
-        console.log(req.body.updCampground.Location);
         
         vCampGround.findOneAndUpdate({_id: req.params.id}, {$set: req.body.updCampground}, {new: true, useFindAndModify: false}, function (err, vCampGround) {
             if (err) {

@@ -29,7 +29,7 @@
                     <br>
                     <p><%= campground.Description %></p>
                     <p>
-                        <em>Submitted by <%= campground.Author.username %>, <%= moment(campground.CreatedAt).fromNow() %></em>
+                        <em>Submitted by <a href="/users/<%= campground.Author.id %>"> <%= campground.Author.username %></a>, <%= moment(campground.CreatedAt).fromNow() %></em>
                     </p>
                     <% if (vCurrentUser && campground.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
                         <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
@@ -37,7 +37,7 @@
                             <button class="btn btn-xs btn-danger">Delete</button>
                         </form>
                     <% } %>
-            </div>
+                </div>
             </div>
             <div class="well">
                 <div class="text-right">
@@ -69,7 +69,7 @@
     </div>
 <!-- </div> -->
 
-<script>
+<!-- <script>
     function initMap() {
       var lat = <%= campground.Lat %>;
       var lng = <%= campground.Lng %>;
@@ -97,7 +97,7 @@
     }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWs_qXgS7A1_tSk9aq3gAJp8hWyuEtdtc&callback=initMap">
-</script>
+</script> -->
 
 
 <% include ../partials/footer %>

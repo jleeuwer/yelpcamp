@@ -56,4 +56,8 @@ mid_Object.IsLoggedIn = function (req, res, next) {
     res.redirect("/login");
 };
 
+mid_Object.escapeRegex = function(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 module.exports = mid_Object;

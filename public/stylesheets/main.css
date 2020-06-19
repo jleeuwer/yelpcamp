@@ -24,7 +24,56 @@ body {
     transform: scale(2);
     filter: blur(4px);
   }
-  
+
+/* .inlinegroup label {
+float: none; /* if you had floats before? otherwise inline-block will behave differently */
+display: inline-block;
+vertical-align: middle;
+}
+
+.inlinegroup input {
+float: none; /* if you had floats before? otherwise inline-block will behave differently */
+display: inline-block;
+vertical-align: middle;      
+} */
+
+  /* .inlinegroup {
+    display: block;
+    width: 100%; // should be contained by a form or something
+    margin-bottom: 1rem;
+    @media (min-width: 500px) {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    .label, .input {
+      display: block;
+      width: 100%;
+      border: 1px solid rgba(0,0,0,.1);
+      @media (min-width: 500px) {
+        width: auto;
+        display: flex;
+      }
+    }
+    .label {
+      font-size: 13px;
+      @media (min-width: 500px) {
+        /* margin-right: 1rem; */
+        min-width: 100px; // maybe to match many?
+      }
+    }
+    .input {
+      padding: .5rem;
+      font-size: 16px;
+      @media (min-width: 500px) {
+        flex-grow: 1;
+        max-width: 450px; // arbitrary
+      }
+    }
+  }
+   */
+
+
   @keyframes flyin {
      to { 
        filter: blur(0);

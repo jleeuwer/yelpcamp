@@ -1,18 +1,21 @@
   <% include ../partials/header %>
 
-    <!-- Debug Code -->
-    <!-- <% if (vCurrentUser && vCurrentUser.vIsAdmin ) { %>
-      <H1>You are an admin</H1>
-    <% } %>
-    <% console.log("Huidige gebruiker " + vCurrentUser) %> -->
-
     <!-- <div class="container"> -->
       <header class="jumbotron">
           <div class="container">
             <h1><i class="fas fa-campground"></i> Welcome to YelpCamp!</h1>
             <p>View all our hand-picked campgrounds</p>      
             <p>
-              <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add a new campground</a>
+              <a class="btn-sm btn-primary" href="/campgrounds/new">Add a new campground</a>
+            </p>
+            <p>
+              <form action="/campgrounds" method="GET" class="form-inline">
+                  <div class="form-group">
+                      <input type="text" name="vsearch" placeholder="search" class="">
+                      <button class="btn-sm btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                      <!-- <input type="submit" value="Search" class="btn-sm btn-primary"> -->
+                  </div>
+              </form>
             </p>
           </div>
       </header>
@@ -29,6 +32,7 @@
                 <img src="<%= campground.Image %>">
                 <div class="caption">
                     <h4><%= campground.Name %></h4>
+                    Hier
                 </div>
                 <p>
                   <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>

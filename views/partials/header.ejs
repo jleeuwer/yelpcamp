@@ -36,7 +36,11 @@
                   <ul class="nav navbar-nav">
                     <li class="<%= typeof page !== 'undefined' && page === 'campgrounds' ? 'active' : '' %>"><a href="/campgrounds"><i class="fas fa-home"></i> Home</a></li>
                   </ul>
+
                   <ul class="nav navbar-nav navbar-right">
+                    <% if (vCurrentUser || vCurrentUser && vCurrentUser.vIsAdmin) { %>
+                        <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/users/<%= vCurrentUser._id %>/edit">Edit profile <i class="fas fa-users"></i></a></li>
+                    <% } %>
                       <% if(!vCurrentUser){ %>
                           <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/login">Login <i class="fa fa-user"></i></a></li>
                           <li class="<%= typeof page !== 'undefined' && page === 'register' ? 'active' : '' %>"><a href="/register">Sign Up <i class="fa fa-user-plus"></i></a></li>
