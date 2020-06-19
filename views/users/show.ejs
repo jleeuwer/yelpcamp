@@ -1,0 +1,59 @@
+<% include ../partials/header %>
+
+<link rel="stylesheet" href="/stylesheets/profile2.css">
+
+<aside class="profile-card">
+
+    <header>
+      <!-- here’s the avatar -->
+      <a href="http://localhost:3000">
+        <img src="<%= user.vAvatar %>">
+      </a>
+  
+      <!-- the username -->
+      <h1> <%= user.username %></h1>
+  
+      <!-- and role or location -->
+      <h2>- Bla bla bla -</h2>
+  
+    </header>
+  
+    <!-- bit of a bio; who are you? -->
+    <div class="profile-bio">
+        <p>Posted campground</p>
+        <ul>
+            <% campgrounds.forEach(campground => { %>
+                <li>
+                    <a href="/campgrounds/<%= campground.id %>"><%= campground.Name %></a>
+                </li>
+        <% }); %>
+        </ul>
+    
+    </div>
+  
+    <!-- some social links to show off -->
+    <ul class="profile-social-links">
+  
+      <!-- twitter - el clásico  -->
+      <li>
+        <a href="<%= user.vTwitter %>" target="_new">
+          <img src="/images/twitter.png">
+        </a>
+      </li>
+  
+      <!-- envato – use this one to link to your marketplace profile -->
+      <li>
+        <a href=<%= user.vFacebook %>" target="_new">
+          <img src="/images/Facebook.png">
+        </a>
+      </li>
+    
+      <!-- add or remove social profiles as you see fit -->
+  
+    </ul>
+  
+  </aside>
+  <!-- that’s all folks! -->
+
+
+<% include ../partials/footer %>

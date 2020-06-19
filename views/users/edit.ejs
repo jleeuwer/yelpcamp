@@ -1,0 +1,56 @@
+<% include ../partials/header %>
+
+<!-- <% console.log("Edit") %>
+<% console.log(user) %> -->
+
+
+<div class="row">
+    <div class="register">
+        <h1 style="text-align: center">Edit <%= user.username %></h1>
+    </div>
+    <div style="width: 30%; margin: 25px auto;">
+        <form action="/users/<%= user._id %>?_method=PUT" method="POST">
+            <br>
+            <div class="form-group register">
+                <input type="text" value="<%= user.username %>" name="updUser[username]">
+            </div>
+            <div class="form-group register">
+                <input type="text" value="<%= user.vFirstname %>" name="updUser[vFirstname]">
+            </div>
+            <div class="form-group register">
+                <input type="text" value="<%= user.vLastname %>" name="updUser[vLastname]">
+            </div>
+            <div class="form-group register">
+                <input type="date" value="<%= inpDate %>" name="updUser[vDateBirth]">
+            </div>
+            <div class="form-group register">
+                <input type="text" value="<%= user.vFacebook %>" name="updUser[vFacebook]">
+            </div>
+            <div class="form-group register">
+                <input type="text" value="<%= user.vTwitter %>" name="updUser[vTwitter]">
+            </div>
+            <div class="form-group register">
+                <input type="text" value="<%= user.vAvatar %>" name="updUser[vAvatar]">
+            </div>
+            <div class="form-group register">
+                <input type="text" value="<%= user.vEmail %>" name="updUser[vEmail]">
+            </div>
+            <div class="form-group">
+                <% if (vCurrentUser && vCurrentUser.vIsAdmin) { %>
+                    <% if (user.vIsAdmin) { %>
+                        <input type="checkbox" value="<%= user.vIsAdmin %>" name="updUser[vIsAdmin]" value="Yes" checked="checked">
+                    <% } else { %>
+                        <input type="checkbox" value="<%= user.vIsAdmin %>" name="updUser[vIsAdmin]" value="No">
+                    <% } %>
+                    <label for="updUser[vIsAdmin]">Is this an admin?</label>
+                <% } %>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-default btn-block">Submit!</button>
+            </div>
+        </form>
+        <a href="/campgrounds">Go Back</a>
+    </div>
+</div>
+
+<% include ../partials/footer %>
