@@ -25,6 +25,7 @@
     "moment": "^2.26.0",
     "mongoose": "^5.7.4",
     "node-geocoder": "^3.27.0",
+    "node-lipsum": "^1.0.1",
     "nodemailer": "^6.4.8",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",

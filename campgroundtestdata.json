@@ -98,5 +98,15 @@
 	"Lat": -7.138150599999999,
 	"Lng": 107.3922166,
 	"CreatedAt": "2020-06-06"
+},
+{
+	"Name": "Bilbo's hangout",
+	"Image": "https://images.unsplash.com/photo-1566892876288-7d0e900a24d9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2467&q=80",
+	"Description": "Bilbo's hangout in The Shire",
+	"Price": 25,
+	"Location": "The Shire Hobbiton",
+	"Lat": 0,
+	"Lng": 0,
+	"CreatedAt": "2020-06-21"
 }
 ]
