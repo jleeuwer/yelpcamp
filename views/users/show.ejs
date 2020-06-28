@@ -14,7 +14,12 @@
       <h1> <%= user.username %></h1>
   
       <!-- and role or location -->
-      <h2>- Bla bla bla -</h2>
+      <h2>Follow</h2><br>
+      <form action="/follow/<%= user._id %>" method="get">
+        <div class="form-group">
+          <button type="Submit" class="btn btn-xs btn-warning">Follow <%= user.vUserName %></button>
+        </div>
+      </form>
   
     </header>
   

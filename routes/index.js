@@ -1,18 +1,21 @@
-var express = require("express");
-var router = express.Router({mergeParams: true});
-var vpassport = require("passport");
-var vUser = require("../models/user.js");
-var vCampground = require("../models/mcampground.js");
-const vasync = require("async");
-const vmailer = require("nodemailer");
-const vcrypto = require("crypto");
+var     express = require("express");
+var     router = express.Router({mergeParams: true});
+var     vpassport = require("passport");
+var     vUser = require("../models/user.js");
+var     vCampground = require("../models/mcampground.js");
+const   vasync = require("async");
+const   vmailer = require("nodemailer");
+const   vcrypto = require("crypto");
+const   { IsLoggedIn } = require("../middleware/index.js");
+const   user = require("../models/user.js");
+const   notifications = require("../models/mnotifications.js");
+const { readdirSync } = require("fs");
 
 // Main landing page
 router.get("/", function(req, res){
     // res.send("This will be our landing page soon");
     res.render("landing.ejs");
 });
-
 
 // AUTHENTICATION ROUTES
 
@@ -74,18 +77,64 @@ router.get("/logout", function(req, res){
     res.redirect("/");
 });
 
-router.get("/users/:id", function (req, res) {
-    vUser.findById(req.params.id, function(err, foundUser) {
-        if (err) {
+// User profile route
+router.get("/users/:id", async function (req, res) {
+    try {
+        let vuser = await vUser.findById(req.params.id).populate('followers').exec();
+        let foundCampgrounds = await vCampground.find().where('Author.id').equals(vuser._id).exec();
+        res.render("users/show", {user: vuser, campgrounds: foundCampgrounds});
+        }
+    catch (err) {
             req.flash("error", "Something went wrong in accessing the data");
             res.redirect("/");
         }
-        // console.log("Found user" + foundUser);
-        vCampground.find().where('Author.id').equals(foundUser._id).exec(function(err, foundCampgrounds) {
-            res.render("users/show", {user: foundUser, campgrounds: foundCampgrounds});
-        });
-    });
 });
+
+// Saving the following action
+router.get("/follow/:id", IsLoggedIn, async function (req, res ) {
+    try {
+        let vuser = await vUser.findById(req.params.id).populate('followers').exec();
+        vuser.followers.push(req.user._id);
+        vuser.save();
+        req.flash("success", "Succesfully followd " + vuser.vUserName + '!');
+        res.redirect("/users/" + req.params.id);
+        }
+    catch (err) {
+            req.flash("error", "Something went wrong in accessing the data");
+            res.redirect("/");
+        };
+});
+
+// Show notifications page
+router.get("/notifications", IsLoggedIn, async function (req, res ) {
+    try {
+        let founduser = await vUser.findById(req.user._id).populate( {
+            path: 'notifications',
+            options: { sort: { "_id" : -1 } }
+        }).exec();
+        let allNotifications = founduser.notifications;
+        res.render("users/notification.ejs", {par_allNotifications : allNotifications} ); 
+    }
+    catch (err) {
+            req.flash("error", "Something went wrong in accessing the data " + err.message);
+            res.redirect("/");
+    };
+});   
+
+// Show notification
+router.get("/notifications/:id", IsLoggedIn, async function (req, res ) {
+    try {
+        let notification = await notifications.findById(req.params.id);
+        notification.isRead = true;
+        notification.save();
+        res.redirect(`/campgrounds/${notification.campgroundId}`); // Use single quote to translate the $-expression
+    }
+    catch (err) {
+            req.flash("error", "Something went wrong in accessing the data" + err.message);
+            res.redirect("/");
+    };
+});   
+
 
 function convertToYYYYMMDD(d) {
     date = new Date(d);

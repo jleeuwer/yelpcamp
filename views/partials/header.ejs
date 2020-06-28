@@ -36,10 +36,26 @@
                   <ul class="nav navbar-nav">
                     <li class="<%= typeof page !== 'undefined' && page === 'campgrounds' ? 'active' : '' %>"><a href="/campgrounds"><i class="fas fa-home"></i> Home</a></li>
                   </ul>
-
                   <ul class="nav navbar-nav navbar-right">
+                    <% if (vCurrentUser && notifications) { %>
+                        <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Notifications <span class="badge"><%= notifications.length %></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/notifications">View past notifications</a>
+                                </li>
+                                <% notifications.forEach(function(notification) { %>  
+                                    <li>
+                                        <a href="/notifications/<%= notification.id %>">
+                                            <%= notification.username %> created a new campground
+                                        </a>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        </li>
+                    <% } %>
                     <% if (vCurrentUser || vCurrentUser && vCurrentUser.vIsAdmin) { %>
-                        <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/users/<%= vCurrentUser._id %>/edit">Edit profile <i class="fas fa-users"></i></a></li>
+                            <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/users/<%= vCurrentUser._id %>/edit">Edit profile <i class="fas fa-users"></i></a></li>
                     <% } %>
                       <% if(!vCurrentUser){ %>
                           <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/login">Login <i class="fa fa-user"></i></a></li>

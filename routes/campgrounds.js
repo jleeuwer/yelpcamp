@@ -4,6 +4,9 @@ var vCampGround = require("../models/mcampground");
 var vMiddleware = require("../middleware"); // If requiring a directory, it will require the index.js in that directory
 // Geocoder module
 var NodeGeocoder = require('node-geocoder');
+var Notification = require("../models/mnotifications.js");
+var vUser = require("../models/user.js");
+
  
 var options = {
   provider: 'google',
@@ -57,7 +60,7 @@ router.get("/new", vMiddleware.IsLoggedIn , function(req, res){
 });
 
 // Create Route - add campground to the DB
-router.post("/", vMiddleware.IsLoggedIn , function(req, res){
+router.post("/", vMiddleware.IsLoggedIn , async function(req, res){
     var vAuthor = {
         id: req.user._id,
         username: req.user.username
@@ -68,25 +71,37 @@ router.post("/", vMiddleware.IsLoggedIn , function(req, res){
     var vlat = 0;
     var vlng = 0;
 
-    geocoder.geocode(req.body.Location, function (err, data) {
-        if (err || !data.length) {
-            req.flash('error', err.message);
-            return res.redirect('back');
-        }
-        vlat = data[0].latitude;
-        vlng = data[0].longitude;
-        vlocation = data[0].formattedAddress;
+    try {
+        const geoLoc = await geocoder.geocode(req.body.Location);
+            // if (err || !data.length) {
+            //     req.flash('error', err.message);
+            //     return res.redirect('back');
+            // }
+            vlat = geoLoc[0].latitude;
+            vlng = geoLoc[0].longitude;
+            vlocation = geoLoc[0].formattedAddress;
 
-        var newCampground = {Name: req.body.vName, Image: req.body.vUrl, Description: req.body.Description, Author: vAuthor, Price: req.body.Price, Location: vlocation, Lat: vlat, Lng: vlng};
+            var newCampground = {Name: req.body.vName, Image: req.body.vUrl, Description: req.body.Description, Author: vAuthor, Price: req.body.Price, Location: vlocation, Lat: vlat, Lng: vlng};
+    
+            let newlycreatedCampground = await vCampGround.create(newCampground); 
 
-        vCampGround.create(newCampground, function(err, newlycreatedCampground) {
-            if(err){
-                req.flash("error", "There was a problem accessing the data");
-            } else {
-                res.redirect("/campgrounds");
+            let founduser = await vUser.findById(req.user._id).populate('followers').exec();
+            // create notifiation object
+            let newNotification = {
+                username: req.user.username,
+                campgroundId: newlycreatedCampground.id
             };
-        });
-    });
+            // Create a notification for each follower
+            for(const follower of founduser.followers) {
+                let notification = await Notification.create(newNotification);
+                follower.notifications.push(notification);
+                follower.save();
+            }
+    } catch (err) {
+        req.flash("error", err.message);
+        res.redirect('back');
+    };
+    res.redirect("/campgrounds");
 });
 
 // Show Route - Show data of one instance from the dataset

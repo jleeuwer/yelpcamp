@@ -3,7 +3,7 @@ var     Campground  = require("./models/mcampground");
 var     Comment     = require("./models/mcomment");
 var     User        = require("./models/user");
 const   fs          = require("fs"); 
-var     Lipsum      = require('node-lipsum');
+// var     Lipsum      = require('node-lipsum');
 
 
 var vCampgroundschema = new mongoose.Schema ({

@@ -4,14 +4,14 @@ const express = require("express");
 const app = express();
 const chalk = require("chalk");
 const vmongoose = require("mongoose");
-var vseeds = require("./seeds");
+const vseeds = require("./seeds");
 const vpassport = require("passport");
 const vlocalstrategy = require("passport-local");
 const vpassportlocalmongoose = require("passport-local-mongoose");
 const bodyParser = require("body-parser");
 const vMethodOverride = require("method-override");
 const flash = require("connect-flash");
-var testcomment = require("./testcomments");
+const testcomment = require("./testcomments");
 const vasync = require("async");
 const vmailer = require("nodemailer");
 const vcrypto = require("crypto");
@@ -48,16 +48,30 @@ var mod_index_routers = require("./routes/index");
 // console.log(process.env.DATABASEURL);
 
 //  Connect the model
-var envDBURL = process.env.DATABASEURL || "mongodb://localhost:27017/yelpcamp"
+// var envDBURL = process.env.DATABASEURL || "mongodb://localhost:27017/yelpcamp"
+var envDBURL = process.env.DATABASEURL
 vmongoose.connect(envDBURL, { useNewUrlParser: true, useUnifiedTopology: true  });
 
 // Schema Setup for campground and comments
-var vCampGround = require("./models/mcampground.js");
-var vComment    = require("./models/mcomment.js");
+var vCampGround     = require("./models/mcampground.js");
+var vComment        = require("./models/mcomment.js");
+var notifications   = require("./models/mnotifications.js");
 
 // Pass current user to all routes
-app.use(function (req, res, next) {
+app.use(async function (req, res, next) {
     res.locals.vCurrentUser = req.user;
+    if (req.user) {
+        try {
+            let founduser = await vUser.findById(req.user._id).populate('notifications', null, { isRead: false}).exec();
+            // console.log("User " + founduser);
+            res.locals.notifications = founduser.notifications.reverse();
+            // console.log("Not" + notifications);
+        } catch (err) {
+            console.log("Something went wrong in reading the notifications" + " " + err.message);
+        }
+    } else {
+        res.locals.notifications = [];
+    }
     res.locals.error = req.flash("error");
     res.locals.success = req.flash("success");
     next();
@@ -87,7 +101,7 @@ app.get("*", function(req,res){
 });
 
 // Listen route
-app.listen(3000, function() { 
+app.listen(process.env.PORT, function() { 
     console.log('The Yelpcamp application has started. Server listening on port 3000'); 
     console.log(chalk.yellow('Yelpcamp') + ' has started' + chalk.black('!'));
   });
