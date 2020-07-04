@@ -1,8 +1,10 @@
-var     mongoose    = require("mongoose");
-var     Campground  = require("./models/mcampground");
-var     Comment     = require("./models/mcomment");
-var     User        = require("./models/user");
-const   fs          = require("fs"); 
+var     mongoose        = require("mongoose");
+var     Campground      = require("./models/mcampground");
+var     Comment         = require("./models/mcomment");
+var     User            = require("./models/user");
+var     Notifications   = require("./models/mnotifications.js");
+const   fs              = require("fs"); 
+const user = require("./models/user");
 // var     Lipsum      = require('node-lipsum');
 
 
@@ -108,11 +110,16 @@ async function RemoveAllPreviousTestData() {
     try {
         // Remove all campgrounds
         await Campground.deleteMany({});  
+
         // Campground deletemany
         console.log("removed campgrounds!");
     
         // Remove all comments
-        await Comment.deleteMany({}); 
+        await Comment.deleteMany({});
+
+        // Remove all notifications
+        await Notifications.deleteMany({});
+
         // Comment deletemany
         console.log("removed comments!");
     } catch {
@@ -149,6 +156,7 @@ async function seedDB(){
             commentSchema.Author = vAuthor;
             let comment = await Comment.create(commentSchema);
         };
+
         // Read the comments
         let allComments = await Comment.find({});
         if (process.env.DEBUG==="1") {
@@ -156,6 +164,7 @@ async function seedDB(){
             console.log(allComments);
             console.log("Users " + allUsers);
         };
+        
         //add a few campgrounds
         for (const seed of data) {
             console.log("Create campground");
@@ -208,8 +217,54 @@ async function seedDB(){
             };
             let campground = await Campground.create(vCampgroundschema);
         };
-    } catch {
-        console.log("An error occurred creating all previous test data");
+
+        // Create some followers for each user
+        // Loop through the users
+        // Create a random set of followers
+        // allUsers.forEach(upd(err, user) {
+        //     // handle
+        //     console.log(foundUser.vUserName);
+        // });
+        // Generate followers
+        for (const user of allUsers) {
+            if (process.env.DEBUG===1) {
+                console.log(user);
+            };
+            // Generate two followers
+            // Remove all existing followers
+            let remuser = await User.updateOne({_id: user._id}, { $set: { followers: [] }});
+            for (i = 0; i<2; i++) {
+                // Determine a random user
+                // Check of ID already exists in followers
+                // Check of follower not the same is as the id being processed
+                let controlCheck = false;
+                while (!controlCheck) {
+                    var vRandomUser = Math.floor(Math.random() * (allUsers.length-1));
+
+                    if (process.env.DEBUG===1) {
+                        console.log("Random bepaalde follower" + allUsers[vRandomUser]._id);
+                        console.log("Verwerkte gebruiker" + user._id);
+                    };
+                    if (allUsers[vRandomUser]._id != user._id) {
+                        var follower = {
+                            followers: allUsers[vRandomUser]._id
+                        };
+                        // console.log(allUsers[vRandomUser]);
+                        if (allUsers[vRandomUser].followers.indexOf(follower) === -1) {
+                                if (process.env.DEBUG===1) {
+                                    console.log("Pushing");
+                                }
+                                user.followers.push(allUsers[vRandomUser]._id);
+                                controlCheck = true;
+                        };
+                    };
+                };
+            };
+            user.save();
+        };
+        // user.save();
+    } catch (err) {
+        console.log("An error occurred creating all previous test data " + err.message);
     };
 }
 

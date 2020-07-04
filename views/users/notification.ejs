@@ -1,6 +1,9 @@
 <% include ../partials/header %>
 
     <div class="card border-primary mb-3" style="max-width: 18rem;">
+        <% if (par_allNotifications.length === 0) { %>
+            <p class="btn btn-warning">No notifications found!</p>
+        <% } %>    
         <% par_allNotifications.forEach(function(notification) { %>  
             <div class="row no-gutter text-white bg-primary">
                 <div class="col-md-4">

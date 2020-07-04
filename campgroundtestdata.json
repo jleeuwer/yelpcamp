@@ -109,4 +109,81 @@
 	"Lng": 0,
 	"CreatedAt": "2020-06-21"
 }
+,
+{
+	"Name": "Peregrin Took's B&B",
+	"Image": "https://images.unsplash.com/photo-1547438688-bc005987deed?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "Peregrin Took doesn't like camping, so he has a B&B",
+	"Price": 25,
+	"Location": "Hobbiton, New Zeeland",
+	"Lat": 0,
+	"Lng": 0,
+	"CreatedAt": "2020-06-21"
+}
+,
+{
+	"Name": "Lady Galadriels lookout",
+	"Image": "https://images.unsplash.com/photo-1520213382808-b4f7981d17d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "This is where Lady Galadriel dreams of The White Wizard",
+	"Price": 25,
+	"Location": "New Zeeland",
+	"Lat": 0,
+	"Lng": 0,
+	"CreatedAt": "2020-05-21"
+}
+,
+{
+	"Name": "Elrond's place under the starry skies",
+	"Image": "https://images.unsplash.com/photo-1479741044197-d28c298f8c77?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "Elrond's place under the starry skies",
+	"Price": 25,
+	"Location": "Kedarkantha Peak, Singtur Range, India",
+	"Lat": 31.0225288,
+	"Lng": 78.1718992,
+	"CreatedAt": "2020-05-21"
+}
+,
+{
+	"Name": "Galadriel's Heaven",
+	"Image": "https://images.unsplash.com/photo-1504311640015-772816fba558?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2549&q=80",
+	"Description": "This is where Galadriel finds her rest",
+	"Price": 28.50,
+	"Location": "Joshua Tree National Park, United States",
+	"Lat": 33.89706715,
+	"Lng": -115.95111578868344,
+	"CreatedAt": "2020-05-21"
+}
+,
+{
+	"Name": "Isildur's Hideout",
+	"Image": "https://images.unsplash.com/photo-1478827536114-da961b7f86d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
+	"Description": "Isildur is hiding from his precious",
+	"Price": 28.50,
+	"Location": "Secret",
+	"Lat": 0,
+	"Lng": 0,
+	"CreatedAt": "2020-02-21"
+}
+,
+{
+	"Name": "Sam's favorite",
+	"Image": "https://images.unsplash.com/photo-1517123438184-82346454d432?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2552&q=80",
+	"Description": "Sam camps where it feels like home",
+	"Price": 28.50,
+	"Location": "New Zeeland",
+	"Lat": 0,
+	"Lng": 0,
+	"CreatedAt": "2020-02-21"
+}
+,
+{
+	"Name": "Meriadoc campingspot",
+	"Image": "https://images.unsplash.com/photo-1496545672447-f699b503d270?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2551&q=80",
+	"Description": "Sam camps where it feels like home",
+	"Price": 28.50,
+	"Location": "Arches National Park, Moab, United States",
+	"Lat": 0,
+	"Lng": 0,
+	"CreatedAt": "2020-02-11"
+}
 ]

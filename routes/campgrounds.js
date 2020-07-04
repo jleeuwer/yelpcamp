@@ -73,30 +73,31 @@ router.post("/", vMiddleware.IsLoggedIn , async function(req, res){
 
     try {
         const geoLoc = await geocoder.geocode(req.body.Location);
-            // if (err || !data.length) {
-            //     req.flash('error', err.message);
-            //     return res.redirect('back');
-            // }
-            vlat = geoLoc[0].latitude;
-            vlng = geoLoc[0].longitude;
-            vlocation = geoLoc[0].formattedAddress;
+        // if (err || !data.length) {
+        //     req.flash('error', err.message);
+        //     return res.redirect('back');
+        // }
+        vlat = geoLoc[0].latitude;
+        vlng = geoLoc[0].longitude;
+        vlocation = geoLoc[0].formattedAddress;
 
-            var newCampground = {Name: req.body.vName, Image: req.body.vUrl, Description: req.body.Description, Author: vAuthor, Price: req.body.Price, Location: vlocation, Lat: vlat, Lng: vlng};
-    
-            let newlycreatedCampground = await vCampGround.create(newCampground); 
+        var newCampground = {Name: req.body.vName, Image: req.body.vUrl, Description: req.body.Description, Author: vAuthor, Price: req.body.Price, Location: vlocation, Lat: vlat, Lng: vlng};
 
-            let founduser = await vUser.findById(req.user._id).populate('followers').exec();
-            // create notifiation object
-            let newNotification = {
-                username: req.user.username,
-                campgroundId: newlycreatedCampground.id
-            };
-            // Create a notification for each follower
-            for(const follower of founduser.followers) {
-                let notification = await Notification.create(newNotification);
-                follower.notifications.push(notification);
-                follower.save();
-            }
+        let newlycreatedCampground = await vCampGround.create(newCampground); 
+
+        let founduser = await vUser.findById(req.user._id).populate('followers').exec();
+        // create notifiation object
+        let newNotification = {
+            username: req.user.username,
+            campgroundId: newlycreatedCampground.id,
+            TypeOfUpdate: 1
+        };
+        // Create a notification for each follower
+        for(const follower of founduser.followers) {
+            let notification = await Notification.create(newNotification);
+            follower.notifications.push(notification);
+            follower.save();
+        }
     } catch (err) {
         req.flash("error", err.message);
         res.redirect('back');
@@ -129,42 +130,76 @@ router.get("/:id/edit", vMiddleware.checkCampgroundOwnership, function(req, res)
 });
 
 // Update Campground Route
-router.put("/:id", function (req, res) {
-    // findByIdAndUpdate has been depracated, so added new function
-    // vCampGround.findByIdAndUpdate(req.params.id, req.body.updCampground, function (err, vCampGround) {
-    geocoder.geocode(req.body.updCampground.Location, function (err, data) {
-        if (err || !data.length) {
-            console.log(err);
-            req.flash('error', 'Invalid address');
-            return res.redirect('back');
-        }
-        req.body.updCampground.Lat = data[0].latitude;
-        req.body.updCampground.Lng = data[0].longitude;
-        req.body.updCampground.Location = data[0].formattedAddress;
+router.put("/:id", async function (req, res) {
+    try {
+        const geoLoc = await geocoder.geocode(req.body.updCampground.Location);
+        if (!geoLoc) {
+            req.body.updCampground.Lat = geoLoc[0].latitude;
+            req.body.updCampground.Lng = geoLoc[0].longitude;
+            req.body.updCampground.Location = geoLoc[0].formattedAddress;
+        };
+
+        let foundCampground = await vCampGround.findOneAndUpdate({_id: req.params.id}, {$set: req.body.updCampground}, {new: true, useFindAndModify: false});
         
-        vCampGround.findOneAndUpdate({_id: req.params.id}, {$set: req.body.updCampground}, {new: true, useFindAndModify: false}, function (err, vCampGround) {
-            if (err) {
-                res.redirect("/campgrounds");
-            } else {
-                req.flash("success", "Campground successfully modified");
-                res.redirect("/campgrounds/" + req.params.id)
-            };
-        });
-    });
+        let founduser = await vUser.findById(req.user._id).populate('followers').exec();
+        // create notifiation object
+        let newNotification = {
+            username: req.user.username,
+            campgroundId: foundCampground.id,
+            TypeOfUpdate: 2
+        };
+        // Create a notification for each follower
+        for(const follower of founduser.followers) {
+            let notification = await Notification.create(newNotification);
+            follower.notifications.push(notification);
+            follower.save();
+        }
+
+        req.flash("success", "Campground successfully modified");
+        res.redirect("/campgrounds/" + req.params.id)        
+    } catch (err) {
+        req.flash("error", err.message);
+        res.redirect('back');        
+    };
 });
 
 // Destroy Campground Route
-router.delete("/:id", vMiddleware.checkCampgroundOwnership, function (req, res) {
-    // res.send("You want to destroy a campground");
-    vCampGround.findOneAndDelete({_id: req.params.id}, function (err) {
-        if (err) {
-            req.flash("error", "There was a problem accessing the data");
-            res.redirect("/campgrounds");
-        } else {
-            req.flash("success", "Campground successfully deleted");
-            res.redirect("/campgrounds");
+router.delete("/:id", vMiddleware.checkCampgroundOwnership, async function (req, res) {
+
+    try {
+        let foundCampground = await vCampGround.findOneAndDelete({_id: req.params.id});
+
+        let founduser = await vUser.findById(req.user._id).populate('followers').exec();
+        // create notifiation object
+        let newNotification = {
+            username: req.user.username,
+            campgroundId: foundCampground.id,
+            TypeOfUpdate: 3
         };
-    });
+        // Create a notification for each follower
+        for(const follower of founduser.followers) {
+            let notification = await Notification.create(newNotification);
+            follower.notifications.push(notification);
+            follower.save();
+        }
+
+        req.flash("success", "Campground successfully deleted");
+        res.redirect("/campgrounds") 
+                
+    } catch (error) {
+        req.flash("error", "There was a problem accessing the data");
+        res.redirect("/campgrounds");        
+    }
+    // res.send("You want to destroy a campground");
+    // vCampGround.findOneAndDelete({_id: req.params.id}, function (err) {
+    //     if (err) {
+    //         req.flash("error", "There was a problem accessing the data");
+    //         res.redirect("/campgrounds");
+    //     } else {
+    //         req.flash("success", "Campground successfully deleted");
+    //         res.redirect("/campgrounds");
+    //     };
+    // });
 });
 
 module.exports = router;

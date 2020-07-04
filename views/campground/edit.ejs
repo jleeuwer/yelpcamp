@@ -1,34 +1,44 @@
 <% include ../partials/header %>
-<!-- <% console.log("Edit") %>
-<% console.log(campground) %> -->
-<!-- <div class="container"> -->
-    <div class="row">
-        <h1 style="text-align: center">Edit <%= campground.Name %></h1>
-        <br>
-        <div style="width: 30%; margin: 50px auto">
-            <form action="/campgrounds/<%= campground._id%>?_method=PUT" method="POST">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="updCampground[Name]" value="<%= campground.Name %>">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="updCampground[Image]" value="<%= campground.Image %>">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="updCampground[Description]" value="<%= campground.Description %>">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="number" name="updCampground[Price]" value="<%= campground.Price %>" min="0.01" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label for="Location">Location</label>
-                    <input class="form-control" type="text" name="updCampground[Location]" id="Location" value="<%= campground.Location %>">
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-lg btn-default btn-block">Submit!</button>
-                </div>
-                <a href="/campgrounds">Go Back</a>
-            </form>
-        </div>        
+
+<h1 style="text-align: center">Edit <%= campground.Name %></h1>
+<br>
+<form action="/campgrounds/<%= campground._id%>?_method=PUT" method="POST">
+    <div class="form-group row">
+        <label class="col-sm-2 sm-offset-2 col-form-label" for="campground">Campground</label>
+        <div class="col-sm-6">
+            <input id="campground" class="form-control" type="text" name="updCampground[Name]" value="<%= campground.Name %>">
+        </div>
     </div>
-<!-- </div> -->
+    <div class="form-group row">
+        <label class="col-sm-2 sm-offset-2 col-form-label" for="image">Image url</label>
+        <div class="col-sm-6">
+            <input id="image" class="form-control" type="text" name="updCampground[Image]" value="<%= campground.Image %>">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 sm-offset-2 col-form-label" for="description">Description</label>
+        <div class="col-sm-6">
+            <input id="description" class="form-control" type="text" name="updCampground[Description]" value="<%= campground.Description %>">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 sm-offset-2 col-form-label" for="prijs">Price</label>
+        <div class="col-sm-6">
+            <input id="prijs" class="form-control" type="number" name="updCampground[Price]" value="<%= campground.Price %>" min="0.01" step="0.01">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 sm-offset-2 col-form-label" for="location">Location</label>
+        <div class="col-sm-6">
+            <input class="form-control" type="text" name="updCampground[Location]" id="Location" value="<%= campground.Location %>">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-4 offset-2 sm-offset-5"> 
+            <button class="btn btn-primary btn-block">Save!</button>
+        </div>
+    </div>
+    <a href="/campgrounds">Go Back</a>
+</form>
+
 <% include ../partials/footer %>

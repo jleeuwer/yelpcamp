@@ -1,7 +1,7 @@
   <% include ../partials/header %>
 
     <!-- <div class="container"> -->
-      <header class="jumbotron">
+      <header class="jumbotron mt-2">
           <div class="container">
             <h1><i class="fas fa-campground"></i> Welcome to YelpCamp!</h1>
             <p>View all our hand-picked campgrounds</p>      
@@ -25,18 +25,21 @@
           <h3>Our Most Popular Campgrounds!</h3>
         </div>
       </div>
-      <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+      <div class="row row-cols-1 row-cols-md-4">
         <% pcampgrounds.forEach(function(campground){ %>
-          <div class="col-md-3 col-sm-6">
-              <div id="thumbnail" class="thumbnail register">
-                <img src="<%= campground.Image %>">
-                <div class="caption">
-                    <h4><%= campground.Name %></h4>
-                    Hier
+          <div class="col mb-4">
+              <div id="thumbnail" class="card border-primary h-100 mb-2 register ">
+                <img class="card-img-top img-responsive" src="<%= campground.Image %>">
+                <div class="card-body">
+                  <div class="card-img-overlay white-color">
+                    <h5><%= campground.Name %></h5>
+                  </div>
+                  <p class="card-text">
+                    <div class="">
+                      <a href="/campgrounds/<%= campground._id %>" class="card-link btn btn-primary">More Info</a>
+                    </div>
+                  </p>
                 </div>
-                <p>
-                  <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>
-                </p>
               </div>
           </div>
         <% }); %>

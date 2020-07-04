@@ -1,82 +1,80 @@
 <% include ./partials/header %>
-<div class="row">
-    <div class="register">
-        <h1 style="text-align: center">Sign Up</h1>
-    </div>
-        <form class="form-horizontal" action="/register" method="POST">
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="username">Username : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="username" placeholder="username" name="username" autofocus>
-                    </div>
+        <form action="/register" method="POST">
+            <div class="form-group row register">
+                <h1 class="text-center">Sign Up</h1>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="username">Username</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="username" placeholder="username" name="username" maxlength="15" autofocus>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="admincode">Admin code : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="admincode" placeholder="Admin Code" name="admincode">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="admincode">Admin code</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="admincode" placeholder="Admin Code" name="admincode">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="firstname">First Name : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="firstname">First Name</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="lastname">Last Name : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="lastname">Last Name</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="datebirth">Date of Birth : </label>
-                    <div class="col-sm-6">
-                        <input type="date" class="form-control" id="datebirth" placeholder="Date of Birth" name="datebirth">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="datebirth">Date of Birth</label>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control" id="datebirth" placeholder="Date of Birth" name="datebirth">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="facebook">Facebook Link : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="facebook" placeholder="Facebook link" name="facebook">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="facebook">Facebook Link</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="facebook" placeholder="Facebook link" name="facebook">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="twitter">Twitter Link : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="twitter" placeholder="Twitter Link " name="twitter">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="twitter">Twitter Link</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="twitter" placeholder="Twitter Link " name="twitter">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="avatar">Avatar : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="avatar" placeholder="Avatar Link" name="avatar">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="avatar">Avatar</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="avatar" placeholder="Avatar Link" name="avatar">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="email">Email address : </label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="email" placeholder="Email address" name="email">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="email">Email address</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="email" placeholder="Email address" name="email">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 col-sm-offset-2 control-label" for="password">Password : </label>
-                    <div class="col-sm-6">
-                        <input type="password" class="form-control" id="password" placeholder="password" name="password">
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 sm-offset-2 col-form-label" for="password">Password</label>
+                <div class="col-sm-6">
+                    <input type="password" class="form-control" id="password" placeholder="password" name="password">
                 </div>
-            <div class="formgroup">
-                <div class="col-sm-4 col-sm-offset-5"> 
-                    <button class="btn btn-lg btn-primary btn-block">Sign Up!</button>
+            </div>
+            <div class="formgroup row">
+                <div class="col-sm-4 sm-offset-5"> 
+                    <button class="btn-lg btn-primary btn-block">Sign Up!</button>
                 </div>
             </div>
         </form>
-        <div class="formgroup">
-            <div class="col-sm-4 col-sm-offset-5"> 
-                <a href="/campgrounds"><button class="btn btn-lg btn-info btn-block"><i class="fas fa-chevron-left"> Back to Campgrounds</i></button></a>
+        <div class="formgroup row">
+            <div class="col-sm-4 sm-offset-5"> 
+                <a href="/campgrounds"><button class="btn-lg btn-info btn-block"><i class="fas fa-chevron-left"> Back to Campgrounds</i></button></a>
             </div>
         </div>
-    <!-- </div> -->
-</div>
 <br>
 <br>
 <% include ./partials/footer %>
