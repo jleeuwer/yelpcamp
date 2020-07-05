@@ -35,8 +35,13 @@
                     <h5><%= campground.Name %></h5>
                   </div>
                   <p class="card-text">
-                    <div class="">
-                      <a href="/campgrounds/<%= campground._id %>" class="card-link btn btn-primary">More Info</a>
+                    <div class="fixed-bottom mb-2 ml-2 mt-auto">
+                      <div>
+                        <span class="badge badge-info"><i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
+                      </div>
+                      <div class="">
+                        <a href="/campgrounds/<%= campground._id %>" class="card-link btn btn-primary">More Info</a>
+                      </div>
                     </div>
                   </p>
                 </div>
@@ -45,5 +50,7 @@
         <% }); %>
       </div>
     <!-- </div> -->
+
+
 
     <% include ../partials/footer %>

@@ -23,6 +23,12 @@ var vCampgroundschema = new vmongoose.Schema ({
            type: vmongoose.Schema.Types.ObjectId,
            ref: "Comment"
         }
+    ],
+    likes: [
+        {
+            type: vmongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
     ]
 });
 

@@ -29,6 +29,12 @@ var vCampgroundschema = new mongoose.Schema ({
            type: mongoose.Schema.Types.ObjectId,
            ref: "Comment"
         }
+    ],
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
     ]
 });
 
@@ -178,6 +184,7 @@ async function seedDB(){
             vCampgroundschema.Lng           =  seed.Lng;
             vCampgroundschema.CreatedAt     =  seed.CreatedAt;
             vCampgroundschema.comments      =  [];
+            vCampgroundschema.likes         =  [];
     
             // Determine a random user
             var vRandomUser = Math.floor(Math.random() * (allUsers.length-1));

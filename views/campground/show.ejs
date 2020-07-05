@@ -36,6 +36,32 @@
                             Submitted by <a href="/users/<%= campground.Author.id %>"> <%= campground.Author.username %></a>, <%= moment(campground.CreatedAt).fromNow() %>
                         </em>
                     </p>
+                    <div style="padding-bottom: 10px;">
+                        <form action="/campgrounds/<%= campground._id %>/like" method="POST">
+                            <div class="btn-group">
+                                <% if (vCurrentUser && campground.likes.some(function (like) {
+                                    return like.equals(vCurrentUser._id)
+                                })) { %>
+                                    <button class="btn-sm btn-primary">
+                                        <i class="fas fa-thumbs-up"></i> Liked (<%= campground.likes.length %>)
+                                    </button>
+                                <% } else { %>
+                                    <button class="btn-sm btn-primary">
+                                        <i class="fas fa-thumbs-up"></i> Like (<%= campground.likes.length %>)
+                                    </button>
+                                <% } %>
+                                <button type="button" class="btn-sm btn-info" data-toggle="modal"
+                                        data-target="#campgroundLikes">See more details
+                                </button>
+                            </div>
+                            <div class="float-right">
+                                <button type="button" class="btn-xs btn-primary" data-toggle="modal"
+                                        data-target="#campgroundLikes">
+                                    <span>Total likes: <i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                     <% if (vCurrentUser && campground.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
                         <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
                         <form id="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
@@ -73,6 +99,43 @@
             </div>
         </div>
     </div>
+
+<!-- Campground Likes Modal -->
+<div id="campgroundLikes" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Campground likes: <%= campground.likes.length %></h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Liked by:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% campground.likes.forEach(function(like) { %>
+                            <tr>
+                                <td><span class="badge"><i class="far fa-thumbs-up"></i></span> <%= like.vUserName %></td>
+                            </tr>
+                        <% }); %>
+                        <% if (campground.likes.length === 0) { %>
+                            <tr>
+                                <td><em>No likes yet.</em></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- <script>
