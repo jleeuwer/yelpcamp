@@ -126,6 +126,7 @@ async function RemoveAllPreviousTestData() {
         // Remove all notifications
         await Notifications.deleteMany({});
 
+
         // Comment deletemany
         console.log("removed comments!");
     } catch {
@@ -268,8 +269,10 @@ async function seedDB(){
                 };
             };
             user.save();
+            // Notifications
+            remuser = await User.updateOne({_id: user._id}, { $set: { notifications: [] }});
+
         };
-        // user.save();
     } catch (err) {
         console.log("An error occurred creating all previous test data " + err.message);
     };

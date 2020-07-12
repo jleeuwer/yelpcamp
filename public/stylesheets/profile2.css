@@ -38,9 +38,11 @@ aside:hover {
   border-top: 4px solid #26A69A;
   border-bottom: 4px solid #00695C;
   border-radius: 5px;
-  height: 480px;
+  height: 480px; /* 480px */
   width: 350px;
   box-shadow: 0 0 70px 10px #fff;
+  overflow-x: hidden; 
+  overflow-y: auto; 
 }
 
 aside:hover header img {
@@ -85,6 +87,7 @@ header h2 {
 
 .profile-bio {
   margin-top: 20px;
+  margin-bottom: 20px;
   padding: 1px 20px 10px 20px !important;
   transition: all linear 1.5s;
   color: #fff;

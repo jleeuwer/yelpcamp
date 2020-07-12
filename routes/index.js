@@ -79,15 +79,26 @@ router.get("/logout", function(req, res){
 
 // User profile route
 router.get("/users/:id", async function (req, res) {
+    var username = [];
     try {
+        // Find the selected user and it's followers
         let vuser = await vUser.findById(req.params.id).populate('followers').exec();
+        // Loop through each follower to get the username
+        vuser.followers.forEach(async follower => {
+            // console.log("Volger " + follower._id);
+            let tuser = await vUser.findById(follower._id);
+            // console.log("Username" + tuser.vUserName);
+            username.push(tuser.vUserName);
+            // console.log(follower);
+            // console.log(username);
+        });
         let foundCampgrounds = await vCampground.find().where('Author.id').equals(vuser._id).exec();
-        res.render("users/show", {user: vuser, campgrounds: foundCampgrounds});
+        res.render("users/show", {user: vuser, campgrounds: foundCampgrounds, username: username});
         }
     catch (err) {
-            req.flash("error", "Something went wrong in accessing the data");
-            res.redirect("/");
-        }
+        req.flash("error", "Something went wrong in accessing the data");
+        res.redirect("/");
+    };
 });
 
 // Saving the following action

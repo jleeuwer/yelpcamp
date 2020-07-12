@@ -30,6 +30,35 @@ var userSchema = new vmongoose.Schema({
     ]
 });
 
+userSchema.pre("save", function(next) {
+    var self = this;
+
+    // Email address should be unique
+    this.constructor.findOne({ 'vEmail' : self.vEmail }, 'vEmail', function(err, results) {
+        if(err) {
+            next(err);
+        } else if(results) {
+            // console.warn('results', results);
+            self.invalidate("Email", "Email must be unique");
+            next(err);
+        } else {
+            next();
+        }
+    });
+    // Username must be unique
+    this.constructor.findOne({ 'vUserName' : self.vUserName }, 'vUserName', function(err, results) {
+        if(err) {
+            next(err);
+        } else if(results) {
+            // console.warn('results', results);
+            self.invalidate("Username", "Username must be unique");
+            next(err);
+        } else {
+            next();
+        }
+    });
+});
+
 userSchema.plugin(vpassportlocalmongoose);
  
 module.exports = vmongoose.model("User", userSchema);

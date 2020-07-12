@@ -58,6 +58,13 @@ body {
     text-align:left; 
  }
 
+ .hrimg img {
+    width: auto;
+    height: 40%;
+    padding: 10px 0px 10px 0px;
+    opacity: 1.0;
+}
+
 /* Flaired edges, by Tomas Theunissen */
 
 /* hr.style-seven {
@@ -84,4 +91,6 @@ hr.style-four {
     border: 0;
     box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
 } */
+
+
 

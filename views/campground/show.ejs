@@ -55,7 +55,7 @@
                                 </button>
                             </div>
                             <div class="float-right">
-                                <button type="button" class="btn-xs btn-primary" data-toggle="modal"
+                                <button type="button" class="btn-sm btn-primary" data-toggle="modal"
                                         data-target="#campgroundLikes">
                                     <span>Total likes: <i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
                                 </button>
@@ -72,7 +72,7 @@
             </div>
             <div class="well">
                 <div class="text-right">
-                    <a class="btn btn-success" href="/campgrounds/<%=campground._id%>/comments/new">Add comment</a>
+                    <a class="btn btn-secondary" href="/campgrounds/<%=campground._id%>/comments/new">Add comment</a>
                 </div>
                 <hr>
                     <% campground.comments.forEach(function(comment){ %>
@@ -84,15 +84,17 @@
                                 </span>
                                 <p><%=comment.Text%></p>
                                 <% if (vCurrentUser && comment.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
-                                    <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
+                                    <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
                                     <form class="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
-                                        <button class="btn btn-xs btn-danger">Delete</button>
+                                        <button class="btn btn-sm btn-danger">Delete</button>
                                     </form>
                                 <% } %>
                             </div>
                         </div>
-                        <img src="/images/hr1-raypham.gif" alt="">
-                    <%});%>
+                        <div class="hrimg">
+                            <img src="/images/campfire.png">
+                        </div>
+                    <% });%>
                     <p>
                         <a class="btn btn-primary" href="/campgrounds">Back to campgrounds</a>
                     </p>
