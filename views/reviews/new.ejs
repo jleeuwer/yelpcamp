@@ -1,0 +1,67 @@
+<% include ../partials/header %>
+
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">
+                Yelpcamp
+            </p>
+            <!-- Map placeholder -->
+            <div id="map">
+
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <img class="img-card-img-top" src="<%= campground.Image%>" height="400"  alt="" srcset="">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h4 class="pull-left">
+                            <a>
+                                <%= campground.Name %>
+                            </a>
+                        </h4>
+                    </div>
+                    <h4 class="text-right">€ <%= campground.Price %> per night</h4>
+                    <br>
+                    <br>
+                    <p>
+                        <%= campground.Description %>
+                    </p>
+                    <p>
+                        <em>
+                            Submitted by <a href="/users/<%= campground.Author.id %>"> <%= campground.Author.username %></a>, <%= moment(campground.CreatedAt).fromNow() %>
+                        </em>
+                    </p>
+                    <div style="padding-bottom: 10px;">
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <div class="row mt-4">
+        <div class="col md-3">
+            <!-- Nothing here -->
+        </div>
+        <div class="col-md-9">
+            <form action="/campgrounds/<%= campground._id %>/reviews" method="post">
+                <div class="form-group">
+                    <ul class="rate-area">
+                        <input type="radio" id="5-star" name="review[rating]" value="5" /><label for="5-star" title="Amazing">5 stars</label>
+                        <input type="radio" id="4-star" name="review[rating]" value="4" /><label for="4-star" title="Good">4 stars</label>
+                        <input type="radio" id="3-star" name="review[rating]" value="3" /><label for="3-star" title="Average">3 stars</label>
+                        <input type="radio" id="2-star" name="review[rating]" value="2" /><label for="2-star" title="Not Good">2 stars</label>
+                        <input type="radio" id="1-star" name="review[rating]" value="1" /><label for="1-star" title="Bad">1 star</label>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" type="text" name="review[text]" placeholder="Write a review for this campground..." rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block">Submit a Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<% include ../partials/googlemaps %>
+<% include ../partials/footer %>

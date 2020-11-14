@@ -1,0 +1,1 @@
+mongoexport --db yelpcamp --collection users --out users.json --pretty
