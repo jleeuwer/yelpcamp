@@ -4,100 +4,259 @@
             <p class="lead">
                 Yelpcamp
             </p>
-            <div class="list-group">
-                 <li class="list-group-item active">Info 1</li>
-                 <li class="list-group-item">Info 2</li>
-                 <li class="list-group-item">Info 3</li>
-            </div>
+            <ul id="eventlist" class="list-group">
+                <a href="#" onclick="notify(this)" class="list-group-item active">General Info</a>
+                <a href="#" onclick="notify(this)" class="list-group-item">Town Info</a>
+                <a href="#" onclick="notify(this)" class="list-group-item">Sightseeing</a>
+            </ul>
             <!-- Map placeholder -->
             <div id="map">
 
             </div>
         </div>
         <div class="col-md-9">
-            <div class="card">
-                <img class="img-card-img-top" src="<%= campground.Image%>" height="400" width="600" alt="" srcset="">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h4 class="pull-left">
-                            <a>
-                                <%= campground.Name %>
-                            </a>
-                        </h4>
-                    </div>
-                    <h4 class="text-right">€ <%= campground.Price %> per night</h4>
-                    <br>
-                    <br>
-                    <p>
-                        <%= campground.Description %>
-                    </p>
-                    <p>
-                        <em>
-                            Submitted by <a href="/users/<%= campground.Author.id %>"> <%= campground.Author.username %></a>, <%= moment(campground.CreatedAt).fromNow() %>
-                        </em>
-                    </p>
-                    <div style="padding-bottom: 10px;">
-                        <form action="/campgrounds/<%= campground._id %>/like" method="POST">
-                            <div class="btn-group">
-                                <% if (vCurrentUser && campground.likes.some(function (like) {
-                                    return like.equals(vCurrentUser._id)
-                                })) { %>
-                                    <button class="btn-sm btn-primary">
-                                        <i class="fas fa-thumbs-up"></i> Liked (<%= campground.likes.length %>)
+            <div id="general" display="block">
+                <div class="card">
+                    <img class="img-card-img-top" src="<%= campground.Image%>" height="400"  alt="" srcset="">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h4 class="pull-left">
+                                <a>
+                                    <%= campground.Name %>
+                                </a>
+                            </h4>
+                        </div>
+                        <h4 class="text-right">€ <%= campground.Price %> per night</h4>
+                        <br>
+                        <br>
+                        <p>
+                            <%= campground.Description %>
+                        </p>
+                        <p>
+                            <em>
+                                Submitted by <a href="/users/<%= campground.Author.id %>"> <%= campground.Author.username %></a>, <%= moment(campground.CreatedAt).fromNow() %>
+                            </em>
+                        </p>
+                        <div style="padding-bottom: 10px;">
+                            <form action="/campgrounds/<%= campground._id %>/like" method="POST">
+                                <div class="btn-group">
+                                    <% if (vCurrentUser && campground.likes.some(function (like) {
+                                        return like.equals(vCurrentUser._id)
+                                    })) { %>
+                                        <button class="btn-sm btn-primary">
+                                            <i class="fas fa-thumbs-up"></i> Liked (<%= campground.likes.length %>)
+                                        </button>
+                                    <% } else { %>
+                                        <button class="btn-sm btn-primary">
+                                            <i class="fas fa-thumbs-up"></i> Like (<%= campground.likes.length %>)
+                                        </button>
+                                    <% } %>
+                                    <button type="button" class="btn-sm btn-info" data-toggle="modal"
+                                            data-target="#campgroundLikes">
+                                            See more details
                                     </button>
-                                <% } else { %>
-                                    <button class="btn-sm btn-primary">
-                                        <i class="fas fa-thumbs-up"></i> Like (<%= campground.likes.length %>)
+                                </div>
+                                <div class="float-right">
+                                    <button type="button" class="btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#campgroundLikes">
+                                        <span>Total likes: <i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
                                     </button>
-                                <% } %>
-                                <button type="button" class="btn-sm btn-info" data-toggle="modal"
-                                        data-target="#campgroundLikes">See more details
-                                </button>
-                            </div>
-                            <div class="float-right">
-                                <button type="button" class="btn-sm btn-primary" data-toggle="modal"
-                                        data-target="#campgroundLikes">
-                                    <span>Total likes: <i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
-                                </button>
-                            </div>
-                        </form>
+                                </div>
+                            </form>
+                        </div>
+                        <% if (vCurrentUser && campground.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
+                            <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                            <form id="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                                <button class="btn btn-xs btn-danger">Delete</button>
+                            </form>
+                        <% } %>
+                        <button id="btn-comments" class="btn btn-xs btn-info" onclick="toggleComments()">Show Comments</button>
+                        <button id="btn-reviews" class="btn btn-xs btn-info" onclick="toggleReviews()">Show Reviews</button>
                     </div>
-                    <% if (vCurrentUser && campground.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
-                        <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-                        <form id="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
-                            <button class="btn btn-xs btn-danger">Delete</button>
-                        </form>
-                    <% } %>
                 </div>
             </div>
-            <div class="well">
+            <!-- General Block -->
+            <div id="town" class="hidden">
+            </div>
+            <div class="card">
+            <!-- Town Block -->
+            <div id="sight" class="hidden">
+                <div class="row justify-content-start">
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                </div>
+                <div class="row justify-content-around">
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                    <div class="col-4">
+                    One of two columns
+                    </div>
+                </div>
+            </div>
+            </div> 
+            <!-- end of sightseeing block-->
+            <!-- start of comments block -->
+            <div id="comments" style="display: none">
+                <div class="well">
+                    <div class="text-right">
+                        <a class="btn btn-secondary" href="/campgrounds/<%=campground._id%>/comments/new">Add comment</a>
+                    </div>
+                    <hr>
+                        <% campground.comments.forEach(function(comment){ %>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <strong> <%=comment.Author.username %></strong> 
+                                    <span class="text-right">
+                                        <%= moment(comment.CreatedAt).fromNow() %>
+                                    </span>
+                                    <p><%=comment.Text%></p>
+                                    <% if (vCurrentUser && comment.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
+                                        <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
+                                        <form class="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
+                                            <button class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="hrimg">
+                                <img src="/images/campfire.png">
+                            </div>
+                        <% });%>
+                        <p>
+                            <a class="btn btn-primary" href="/campgrounds">Back to campgrounds</a>
+                        </p>
+                </div>
+            </div> 
+            <!-- Reviews start here-->
+            <div id="reviews" style="display: none">
                 <div class="text-right">
-                    <a class="btn btn-secondary" href="/campgrounds/<%=campground._id%>/comments/new">Add comment</a>
+                    <a class="btn btn-secondary" href="/campgrounds/<%=campground._id%>/reviews/new">Add review</a>
                 </div>
                 <hr>
-                    <% campground.comments.forEach(function(comment){ %>
-                        <div class="row">
+                <!-- This is where the carousel logic starts  -->
+                <div class="container cta-100 ">
+                    <div class="container">
+                        <div class="row blog">
                             <div class="col-md-12">
-                                <strong> <%=comment.Author.username %></strong> 
-                                <span class="text-right">
-                                    <%= moment(comment.CreatedAt).fromNow() %>
-                                </span>
-                                <p><%=comment.Text%></p>
-                                <% if (vCurrentUser && comment.Author.id.equals(vCurrentUser._id) || vCurrentUser && vCurrentUser.vIsAdmin) { %>
-                                    <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
-                                    <form class="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                <% } %>
+                                <div id="blogCarousel" class="carousel slide container-blog" data-ride="carousel">
+                                    <!-- Carousel indicators, every 4th card is a li element-->
+                                    <ol class="carousel-indicators">
+                                        <% campground.reviews.forEach(function(review, index){ %>
+                                            <% if (index === 0) { %>
+                                                <li data-target="#blogCarousel" data-slide-to="0" class="active"></li>
+                                            <% }; %>
+                                            <% if (((index+1) % 4 === 0) && (index > 0)) { %>
+                                                <li data-target="#blogCarousel" data-slide-to="<%= ((index+1) / 4) %>"></li>
+                                            <% }; %>
+                                        <% }); %>
+                                    </ol>
+                                    <!-- Carousel items -->
+                                    <div class="carousel-inner">
+                                        <!-- First review start here, repeat this for every review -->
+                                        <!-- Looping through all the review starts here -->
+                                        <% campground.reviews.forEach(function(review, index){ %>
+                                            <!-- Generate a class carousel-item only on every 1 and 4th element -->
+                                            <!-- Generate a class active on every 1 and 4th element -->
+                                            <!-- Generate a class row on every 1 and 4th element -->
+                                            <% if ((index === 0) || (((index+1) % 4) === 0)) { %> <div class="carousel-item <% }; %><% if (index === 0) { %> active <% }; %>
+                                            <% if ((index === 0) || (((index+1) % 4) === 0)) { %>"><% }; %>
+                                                <% if ((index === 0) || (((index+1) % 4) === 0)) { %> <div class="row"> <% }; %> 
+                                                        <div class="col-md-4" >
+                                                            <div class="item-box-blog">
+                                                                <div class="item-box-blog-image">
+                                                                    <!--Date-->
+                                                                    <div class="item-box-blog-date bg-blue-ui white"> 
+                                                                        <span class="mon"><%= review.updatedAt.toDateString() %></span> 
+                                                                    </div>
+                                                                    <!--Image-->
+                                                                    <figure> 
+                                                                        <img alt="" src="https://cdn.pixabay.com/photo/2017/02/08/14/25/computer-2048983_960_720.jpg"> 
+                                                                    </figure>
+                                                                </div>
+                                                                <div class="item-box-blog-body">
+                                                                    <!--Heading-->
+                                                                    <div class="item-box-blog-heading">
+                                                                        <a href="#" tabindex="0">
+                                                                            <% if (review.rating > 0) { %>
+                                                                                <span id="checked"><i class="fas fa-star" style="color:blue"></i></span>
+                                                                                <i class=" <% if (review.rating > 1.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 1.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                                                                <i class=" <% if (review.rating > 2.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 2.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                                                                <i class=" <% if (review.rating > 3.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 3.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                                                                <i class=" <% if (review.rating > 4.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 4.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                                                            <% } %>
+                                                                        </a>
+                                                                    </div>
+                                                                    <!--Data-->
+                                                                    <div class="item-box-blog-data" style="padding: px 15px;">
+                                                                        <p>
+                                                                            <i class="fas fa-user-edit"></i><%= review.author.username %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <!--Text-->
+                                                                    <div class="item-box-blog-text">
+                                                                        <p>
+                                                                            <%= review.text %>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- item-box-blog-body -->
+                                                            </div>
+                                                            <!-- item-box-blog -->
+                                                        </div>
+                                                    <!-- Looping through all the review ends here -->
+                                                    <!-- Generate a class </div> for carousel-item on every 3rd element -->
+                                                <% if (((index+1) % 3) === 0) { %> </div> <% }; %> 
+                                                <!--.row-->
+                                            <!-- Generate a class </div> for row on every 3rd element -->
+                                            <% if (((index+1) % 3) === 0) { %> </div> <% }; %>
+                                            <!-- carousel-item  -->
+                                        <% }); %>
+                                    </div>
+                                    <!--.Carousel inner-->
+                                </div>
+                                <!-- carousel slide container-blog -->
                             </div>
+                            <!-- col-md-12 -->
                         </div>
-                        <div class="hrimg">
-                            <img src="/images/campfire.png">
-                        </div>
-                    <% });%>
-                    <p>
-                        <a class="btn btn-primary" href="/campgrounds">Back to campgrounds</a>
-                    </p>
+                        <!-- row blog -->
+                    </div>
+                    <!-- container -->
+                </div>
+                <!-- container cta-100  -->
+                <div style="margin-bottom: 10px;">
+                    <button type="button" tabindex="0" class="btn-sm btn-info read" data-toggle="modal"
+                        data-target="#readmore">See all details
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -139,36 +298,120 @@
     </div>
 </div>
 
+<!-- Reviews  Modal -->
+<div id="readmore" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Campground Reviews</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body <container-fluid">
+                <table class="table table-striped">
+                    <tbody>
+                        <% campground.reviews.forEach(function(review) { %>
+                        <div class="row">
+                            <div class="col-xl-3 col-md-3">
+                                <% if (review.rating > 0) { %>
+                                    <span id="checked"><i class="fas fa-star" style="color:blue"></i></span>
+                                    <i class=" <% if (review.rating > 1.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 1.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                    <i class=" <% if (review.rating > 2.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 2.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                    <i class=" <% if (review.rating > 3.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 3.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                    <i class=" <% if (review.rating > 4.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (review.rating > 4.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                                <% } %>
+                                <div>Review by: <strong><%= review.author.username %></strong></div>
+                                <span><em><%= review.updatedAt.toDateString() %></em></span>
+                            </div>
+                            <div class="col-xl-9 col-md-9">
+                                <p class="reviewtext" style="text-align: justify; word-wrap: break-word;">
+                                    <%= review.text %>
+                                </p>
+                                <% if(vCurrentUser && review.author.id.equals(vCurrentUser._id) || (vCurrentUser && vCurrentUser.vIsAdmin)){ %>
+                                    <a class="btn btn-xs btn-warning"
+                                    href="/campgrounds/<%=campground._id %>/reviews/<%=review._id %>/edit">Edit</a>
+                                    <form id="delete-form" action="/campgrounds/<%=campground._id %>/reviews/<%=review._id %>?_method=DELETE" method="POST">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                        <hr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- <script>
-    function initMap() {
-      var lat = <%= campground.Lat %>;
-      var lng = <%= campground.Lng %>;
-      var center = {lat: lat, lng: lng };
-      var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 8,
-          center: center,
-          scrollwheel: false
-      });
-      var contentString = `
-        <strong><%= campground.Name %><br />
-        <%= campground.Location %></strong>
-        <p><%= campground.Description %></p>
-      `
-      var infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-      var marker = new google.maps.Marker({
-          position: center,
-          map: map
-      });
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+<script>
+    function notify(el) {
+        resetElements();
+        // alert(el.innerHTML);
+        var gi = document.getElementById("general");
+        var ti = document.getElementById("town");
+        var si = document.getElementById("sight");
+
+        if (el.innerHTML === "General Info") {
+            gi.style.display = "block";
+            ti.style.display = "none";
+            si.style.display = "none";
+        };
+        if (el.innerHTML === "Town Info") {
+            gi.style.display = "none";
+            ti.style.display = "block";
+            si.style.display = "none";
+        };
+        if (el.innerHTML == "Sightseeing") {
+            gi.style.display = "none";
+            ti.style.display = "none";
+            si.style.display = "block";
+        };
+
+        el.classList.add('active');
+    };
+
+    function resetElements() {
+        // Get all elements with "active" class
+        var els = document.getElementsByClassName("active");
+
+        // Loop over Elements to remove active class;
+        for (var i = 0; i < els.length; i++) {
+            els[i].classList.remove('active')
+        }
     }
-  </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWs_qXgS7A1_tSk9aq3gAJp8hWyuEtdtc&callback=initMap">
-</script> -->
+    function toggleComments() {
+        var x = document.getElementById("comments");
+        var y = document.getElementById("btn-comments");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            y.firstChild.data = "Hide Comments";
+        } else {
+            x.style.display = "none";
+            y.firstChild.data = "Show Comments";
+        }
+
+    }      
+
+    function toggleReviews() {
+        var x = document.getElementById("reviews");
+        var y = document.getElementById("btn-reviews");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            y.firstChild.data = "Hide Reviews";
+        } else {
+            x.style.display = "none";
+            y.firstChild.data = "Show Reviews";
+        }        
+    }
 
 
-<% include ../partials/footer %>
+
+</script>
+
+<% include ../partials/googlemaps.ejs %>
+<% include ../partials/footer.ejs %>

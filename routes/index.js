@@ -7,6 +7,7 @@ const   vasync = require("async");
 const   vmailer = require("nodemailer");
 const   vcrypto = require("crypto");
 const   { IsLoggedIn } = require("../middleware/index.js");
+const   { checkFollowing } = require("../middleware/index.js");
 const   user = require("../models/user.js");
 const   notifications = require("../models/mnotifications.js");
 const { readdirSync } = require("fs");
@@ -29,8 +30,8 @@ router.get("/register", function(req, res){
     res.render("login", {page: 'login'}); 
  });
 
+//  Register the user
 router.post("/register", function(req, res){
-    var vIsAdmin = false; // Default a user is no admin, only when he enters the correct secret code
     var vuser = new vUser();
     vuser.username = req.body.username;
     vuser.vFirstname = req.body.firstname;
@@ -47,7 +48,7 @@ router.post("/register", function(req, res){
 
     var vPassword = req.body.password;
     var vadminCode = req.body.admincode;
-    if (vadminCode === 'YelpCamp') {
+    if (vadminCode === process.env.ADMINCODE) {
         vuser.vIsAdmin = true;
     };
     vUser.register(vuser, vPassword, function(err, user) {
@@ -83,17 +84,9 @@ router.get("/users/:id", async function (req, res) {
     try {
         // Find the selected user and it's followers
         let vuser = await vUser.findById(req.params.id).populate('followers').exec();
-        // Loop through each follower to get the username
-        vuser.followers.forEach(async follower => {
-            // console.log("Volger " + follower._id);
-            let tuser = await vUser.findById(follower._id);
-            // console.log("Username" + tuser.vUserName);
-            username.push(tuser.vUserName);
-            // console.log(follower);
-            // console.log(username);
-        });
+        console.log (vuser.followers);
         let foundCampgrounds = await vCampground.find().where('Author.id').equals(vuser._id).exec();
-        res.render("users/show", {user: vuser, campgrounds: foundCampgrounds, username: username});
+        res.render("users/show", {user: vuser, campgrounds: foundCampgrounds});
         }
     catch (err) {
         req.flash("error", "Something went wrong in accessing the data");
@@ -102,12 +95,12 @@ router.get("/users/:id", async function (req, res) {
 });
 
 // Saving the following action
-router.get("/follow/:id", IsLoggedIn, async function (req, res ) {
+router.get("/follow/:id", checkFollowing, IsLoggedIn, async function (req, res ) {
     try {
-        let vuser = await vUser.findById(req.params.id).populate('followers').exec();
+        let vuser = await vUser.findById(req.params.id);
         vuser.followers.push(req.user._id);
         vuser.save();
-        req.flash("success", "Succesfully followd " + vuser.vUserName + '!');
+        req.flash("success", "Succesfully followed " + vuser.vUserName + '!');
         res.redirect("/users/" + req.params.id);
         }
     catch (err) {
@@ -130,7 +123,7 @@ router.get("/notifications", IsLoggedIn, async function (req, res ) {
             req.flash("error", "Something went wrong in accessing the data " + err.message);
             res.redirect("/");
     };
-});   
+});
 
 // Show notification
 router.get("/notifications/:id", IsLoggedIn, async function (req, res ) {
@@ -206,14 +199,6 @@ router.post("/forgot", function(req, res, next) {
         });
       },
       function(token, vUser, done) {
-        // var smtpTransport = vmailer.createTransport("SMTP", {
-        //   service: "Gmail",
-        //   auth: {
-        //     user: "wxgclan@gmail.com",
-        //     pass: process.env.GMAILPW
-        //   }
-        // });
-        // // create reusable transporter object using the default SMTP transport
         var smtpTransport = vmailer.createTransport('smtps://wxgclan%40gmail.com:'+process.env.GMAILPW+'@smtp.gmail.com');
         var mailOptions = {
           to: vUser.vEmail,

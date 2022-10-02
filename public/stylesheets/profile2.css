@@ -98,6 +98,7 @@ header h2 {
 
 aside:hover .profile-bio {
   opacity: 1;
+  background: none;
 }
 
 .profile-bio p:first-child {
@@ -107,7 +108,7 @@ aside:hover .profile-bio {
 
 .profile-social-links {
   position: relative;
-  margin-top: -440px;
+  margin-top: -640px; /* -440px */
   margin-left: -100px;
   list-style-type: none;
   opacity: 0;
@@ -117,14 +118,23 @@ aside:hover .profile-bio {
 aside:hover .profile-social-links {
   margin-left: -30px;
   opacity: 1;
+  background-color: none;
 }
+
+
 
 .profile-social-links li img {
   width: 30px;
-  background: #fff;
+  background: white;
   border-radius: 50%;
   padding: 5px;
 }
+
+a:hover {
+  background-color: none; 
+  text-decoration: none;
+}
+
 /*PROFILE IMAGE ANIMATE */
 
 @keyframes profile_image {
@@ -348,3 +358,4 @@ aside:hover ul li:nth-child(3) {
     transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
   }
 }
+

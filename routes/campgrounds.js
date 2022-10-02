@@ -1,12 +1,12 @@
-var express = require("express");
-var router = express.Router({mergeParams: true});
-var vCampGround = require("../models/mcampground");
-var vMiddleware = require("../middleware"); // If requiring a directory, it will require the index.js in that directory
+var express         = require("express");
+var router          = express.Router({mergeParams: true});
+var vCampGround     = require("../models/mcampground");
+var vMiddleware     = require("../middleware"); // If requiring a directory, it will require the index.js in that directory
 // Geocoder module
-var NodeGeocoder = require('node-geocoder');
-var Notification = require("../models/mnotifications.js");
-var vUser = require("../models/user.js");
-
+var NodeGeocoder    = require('node-geocoder');
+var Notification    = require("../models/mnotifications.js");
+var vUser           = require("../models/user.js");
+var Review          = require("../models/mreviews.js");
  
 var options = {
   provider: 'google',
@@ -84,20 +84,9 @@ router.post("/", vMiddleware.IsLoggedIn , async function(req, res){
         var newCampground = {Name: req.body.vName, Image: req.body.vUrl, Description: req.body.Description, Author: vAuthor, Price: req.body.Price, Location: vlocation, Lat: vlat, Lng: vlng};
 
         let newlycreatedCampground = await vCampGround.create(newCampground); 
+        // Create Notification
+        vMiddleware.CreateNotification(req.user._id, req.user.username, newlycreatedCampground.id, 1)
 
-        let founduser = await vUser.findById(req.user._id).populate('followers').exec();
-        // create notifiation object
-        let newNotification = {
-            username: req.user.username,
-            campgroundId: newlycreatedCampground.id,
-            TypeOfUpdate: 1
-        };
-        // Create a notification for each follower
-        for(const follower of founduser.followers) {
-            let notification = await Notification.create(newNotification);
-            follower.notifications.push(notification);
-            follower.save();
-        }
     } catch (err) {
         req.flash("error", err.message);
         res.redirect('back');
@@ -107,13 +96,26 @@ router.post("/", vMiddleware.IsLoggedIn , async function(req, res){
 
 // Show Route - Show data of one instance from the dataset
 router.get("/:id", vMiddleware.IsLoggedIn , function (req, res) {
-    vCampGround.findById(req.params.id).populate("comments likes").exec(function(err, foundCampground) {
-        if(err){
+    // vCampGround.findById(req.params.id).populate("comments likes").exec(function(err, foundCampground) {
+    //     if(err){
+    //         req.flash("error", "There was a problem accessing the data");
+    //         res.redirect("/campgrounds");
+    //     } else {
+    //         res.render("campground/show.ejs", {campground: foundCampground});
+    //     };
+    // });
+    //find the campground with provided ID
+    vCampGround.findById(req.params.id).populate("comments likes").populate({
+        path: "reviews",
+        options: {sort: {createdAt: -1}}
+    }).exec(function (err, foundCampground) {
+        if (err) {
             req.flash("error", "There was a problem accessing the data");
             res.redirect("/campgrounds");
         } else {
-            res.render("campground/show.ejs", {campground: foundCampground});
-        };
+            //render show template with that campground
+            res.render("campground/show", {campground: foundCampground});
+        }
     });
 });
 
@@ -141,19 +143,7 @@ router.put("/:id", async function (req, res) {
 
         let foundCampground = await vCampGround.findOneAndUpdate({_id: req.params.id}, {$set: req.body.updCampground}, {new: true, useFindAndModify: false});
         
-        let founduser = await vUser.findById(req.user._id).populate('followers').exec();
-        // create notifiation object
-        let newNotification = {
-            username: req.user.username,
-            campgroundId: foundCampground.id,
-            TypeOfUpdate: 2
-        };
-        // Create a notification for each follower
-        for(const follower of founduser.followers) {
-            let notification = await Notification.create(newNotification);
-            follower.notifications.push(notification);
-            follower.save();
-        }
+        vMiddleware.CreateNotification(req.user._id, req.user.username, newlycreatedCampground.id, 2)
 
         req.flash("success", "Campground successfully modified");
         res.redirect("/campgrounds/" + req.params.id)        
@@ -165,23 +155,12 @@ router.put("/:id", async function (req, res) {
 
 // Destroy Campground Route
 router.delete("/:id", vMiddleware.checkCampgroundOwnership, async function (req, res) {
-
     try {
         let foundCampground = await vCampGround.findOneAndDelete({_id: req.params.id});
 
         let founduser = await vUser.findById(req.user._id).populate('followers').exec();
-        // create notifiation object
-        let newNotification = {
-            username: req.user.username,
-            campgroundId: foundCampground.id,
-            TypeOfUpdate: 3
-        };
-        // Create a notification for each follower
-        for(const follower of founduser.followers) {
-            let notification = await Notification.create(newNotification);
-            follower.notifications.push(notification);
-            follower.save();
-        }
+
+        vMiddleware.CreateNotification(req.user._id, req.user.username, newlycreatedCampground.id, 3);
 
         req.flash("success", "Campground successfully deleted");
         res.redirect("/campgrounds") 

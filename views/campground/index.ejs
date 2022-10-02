@@ -28,29 +28,34 @@
       <div class="row row-cols-1 row-cols-md-4">
         <% pcampgrounds.forEach(function(campground){ %>
           <div class="col mb-4">
-              <div id="thumbnail" class="card border-primary h-100 mb-2 register ">
-                <img class="card-img-top img-responsive" src="<%= campground.Image %>">
+              <div id="thumbnail" class="card border-primary h-100 mb-4 register">
+                <img class="card-img-top mb-4" src="<%= campground.Image %>">
                 <div class="card-body">
                   <div class="card-img-overlay white-color">
                     <h5><%= campground.Name %></h5>
                   </div>
-                  <p class="card-text">
+                  <div class="card-text">
                     <div class="fixed-bottom mb-2 ml-2 mt-auto">
+                      <% if (campground.rating === 0) { %>
+                        <span class="badge badge-info">No reviews yet</span>
+                      <% } else { %>
+                        <span id="checked"><i class="fas fa-star" style="color:blue"></i></span>
+                        <i class=" <% if (campground.rating > 1.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (campground.rating > 1.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                        <i class=" <% if (campground.rating > 2.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (campground.rating > 2.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                        <i class=" <% if (campground.rating > 3.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (campground.rating > 3.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                        <i class=" <% if (campground.rating > 4.5) { %> fas <% } else { %> far <% } %>fa-star" <% if (campground.rating > 4.5) { %> style="color:blue" <% } else { %> style="color:orange" <% } %> > </i>
+                      <% } %>
                       <div>
                         <span class="badge badge-info"><i class="fas fa-thumbs-up"></i> <%= campground.likes.length %></span>
                       </div>
-                      <div class="">
-                        <a href="/campgrounds/<%= campground._id %>" class="card-link btn btn-primary">More Info</a>
-                      </div>
+                      <a href="/campgrounds/<%= campground._id %>" class="card-link btn btn-primary">More Info</a>
                     </div>
-                  </p>
+                  </div>
                 </div>
               </div>
           </div>
         <% }); %>
       </div>
     <!-- </div> -->
-
-
-
+    
     <% include ../partials/footer %>

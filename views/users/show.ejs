@@ -15,7 +15,7 @@
       <!-- and role or location -->
       <form action="/follow/<%= user._id %>" method="get">
         <div class="form-group">
-          <button type="Submit" class="btn btn-xs btn-warning">Follow <%= user.vUserName %></button>
+        <button type="Submit" class="btn btn-xs btn-warning" <% if (user.followers.find(o => o._id === user._id) != 0) { %> disabled <% } %>>Follow <%= user.vUserName %></button>
         </div>
       </form>
     </header>
@@ -33,13 +33,13 @@
             </ul>
             <p>Followers</p>
             <ul>
-              <% username.forEach(follower => { %>
+              <% user.followers.forEach(follower => { %>
                   <li>
-                    <%= follower %>
+                    <%= follower.username %>
                   </li>
               <% }); %>
           </ul>
-            <br>
+          <br>
       </div>
     
       <!-- some social links to show off -->
@@ -60,7 +60,6 @@
         </li>
       
         <!-- add or remove social profiles as you see fit -->
-    
       </ul>
     </aside>
     <!-- that’s all folks! -->

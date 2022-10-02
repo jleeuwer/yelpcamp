@@ -10,6 +10,9 @@ var vnotificationSchema = new vmongoose.Schema ({
 	// 4 = create comment campground
 	// 5 = update comment campground
 	// 6 = delete comment campground
+	// 7 = add review campground
+	// 8 = update review campground
+	// 9 = delete review campground
 	isRead: { type: Boolean, default: false }
 });
 

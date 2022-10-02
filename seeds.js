@@ -3,9 +3,10 @@ var     Campground      = require("./models/mcampground");
 var     Comment         = require("./models/mcomment");
 var     User            = require("./models/user");
 var     Notifications   = require("./models/mnotifications.js");
+var     Review          = require("./models/mreviews");
 const   fs              = require("fs"); 
-const user = require("./models/user");
-// var     Lipsum      = require('node-lipsum');
+const   userSeed        = require("./seedusers.js");
+const   async          = require("async");
 
 
 var vCampgroundschema = new mongoose.Schema ({
@@ -35,7 +36,17 @@ var vCampgroundschema = new mongoose.Schema ({
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }
-    ]
+    ],
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Review"
+        }
+    ],
+    rating: {
+        type: Number,
+        default: 0
+    }
 });
 
 var commentSchema = new mongoose.Schema({
@@ -50,9 +61,48 @@ var commentSchema = new mongoose.Schema({
     }
 });
 
+// Define a model for reviews
+var reviewSchema = new mongoose.Schema({
+    rating: {
+        // Setting the field type
+        type: Number,
+        // Making the star rating required
+        required: "Please provide a rating (1-5 stars).",
+        // Defining min and max values
+        min: 1,
+        max: 5,
+        // Adding validation to see if the entry is an integer
+        validate: {
+            // validator accepts a function definition which it uses for validation
+            validator: Number.isInteger,
+            message: "{VALUE} is not an integer value."
+        }
+    },
+    // review text
+    text: {
+        type: String
+    },
+    // author id and username fields
+    author: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        username: String
+    },
+    // campground associated with the review
+    campground: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Campground",
+        index: true
+    }
+});
+
 // Two JSON arrays for reading the test data from file
 var data = [{}];
 var comData = [{}];
+var reviewData = [{}];
+var campgroundReview = [{}];
 
 // Read all users into an Array
 // Delete all campgrounds
@@ -64,25 +114,21 @@ var comData = [{}];
 //   
 // Random number : Math.floor(Math.random() * 10);
 // Length of Array : array.length (is altijd 1 hoger dan de hoogste index in de array)
+var userData = [{}];
 
-
-async function getLipsum() {
-    try {
-        var lipsum = await new Lipsum();
-        var lipsumOpts = {
-            start: 'yes',
-            what: 'bytes',
-            amount: 10
-        };
-        lipsum.getText(function(text) {
-            console.log(text);
-        }, lipsumOpts);
-    } catch {
-        console.log("Error. Lorem Ipsum not working");
+function ReadUserTestData() {
+    // Process the JSON data for users
+    // Read users.json file 
+    console.log("Reading testdata");
+    userTestData = fs.readFileSync ("users.json");
+    // Converting to JSON 
+    userData = JSON.parse(userTestData); 
+    if (process.env.DEBUG === 1) {
+        console.log (userData);
     };
 };
 
-function ReadCampGroundTestData() {
+async function ReadCampGroundTestData() {
 
     // Process the JSON data for campground
     // Read users.json file 
@@ -94,11 +140,11 @@ function ReadCampGroundTestData() {
         };
     
         // Converting to JSON 
-        return data = JSON.parse(campgroundstestdata); 
+        data = JSON.parse(campgroundstestdata); 
     }); 
 };
 
-function ReadCommentTestData() {
+async function ReadCommentTestData() {
     // Process the JSON data for comments
     fs.readFile("commenttestdata.json", function(err, commenttestdata) { 
         
@@ -109,6 +155,20 @@ function ReadCommentTestData() {
     
         // Converting to JSON 
         comData = JSON.parse(commenttestdata); 
+    }); 
+};
+
+async function ReadReviewTestData() {
+    // Process the JSON data for comments
+    fs.readFile("reviewtestdata.json", function(err, reviewtestdata) { 
+        
+        // Check for errors 
+        if (err) {
+            throw err; 
+        };
+    
+        // Converting to JSON 
+        reviewData = JSON.parse(reviewtestdata); 
     }); 
 };
 
@@ -126,6 +186,7 @@ async function RemoveAllPreviousTestData() {
         // Remove all notifications
         await Notifications.deleteMany({});
 
+        await Review.deleteMany({});
 
         // Comment deletemany
         console.log("removed comments!");
@@ -134,21 +195,83 @@ async function RemoveAllPreviousTestData() {
     };
 };
 
+function calculateAverage(reviews) {
+    if (reviews.length === 0) {
+        return 0;
+    }
+    var sum = 0;
+    reviews.forEach(function (element) {
+        sum += element.rating;
+    });
+    return sum / reviews.length;
+}
+
 async function seedDB(){
     try {
-        // Get lipsum
-        // getLipsum();
+        // userSeed();
+         // Remove all Users
+        console.log("Remove all users");
+        ReadUserTestData();
 
+        User.deleteMany({}, function (err, user ) {
+            if (err) {
+                console.log("Error " + err.message);
+            } else {
+                // Read the testdata
+                // Write Test Comments
+                for (const user of userData) {
+                    console.log("Reading user " + user.username);
+                    var vuser                   = new User();
+                    vuser.username              = user.username;
+                    vuser.vFirstname            = user.vFirstname;
+                    vuser.vUserName             = user.vUserName;
+                    vuser.vLastname             = user.vLastname;
+                    vuser.vDateBirth            = user.vDateBirth;
+                    vuser.vFacebook             = user.vFacebook;
+                    vuser.vTwitter              = user.vTwitter;
+                    vuser.vAvatar               = user.vAvatar;
+                    vuser.resetPasswordToken    = "";
+                    vuser.resetPasswordExpires  = "";
+                    vuser.vEmail                = user.vEmail;
+                    vuser.vPassword             = user.vPassword;
+                    vuser.vIsAdmin              = user.vIsAdmin;
+                    vuser.notifications         = [];
+                    vuser.followers             = [];
+                
+                    User.register(vuser, vuser.vPassword, function(err, reguser) {
+                        if(err){
+                            console.log(err);
+                            return;
+                        }
+                    });
+                };
+            };
+        });
+
+        // Read all the users into an array
+        let allUsers = await User.find({}).exec();
+        // End the procedure if no users are found
+        if (process.env.DEBUG==="1") {
+            console.log (allUsers);
+        };
+
+        if (allUsers.length === 0) {
+            console.log("No users found");
+            return;
+        };
         // Read the data for campgrounds
-        data = ReadCampGroundTestData();
+        ReadCampGroundTestData();
+        if (process.env.DEBUG==="1") {
+            console.log("Alle campgrounds");
+            console.log(data);
+        };
     
-        comData = ReadCommentTestData();
+        ReadCommentTestData();
+
+        ReadReviewTestData();   
     
         RemoveAllPreviousTestData()
-    
-        // Read all the users into an array
-        let allUsers = await User.find({});
-    
+        
         // Write Test Comments
         for (const comseed of comData) {
             commentSchema.Text = comseed.Text;
@@ -171,6 +294,11 @@ async function seedDB(){
             console.log(allComments);
             console.log("Users " + allUsers);
         };
+
+        if (process.env.DEBUG==="1") {
+            console.log("Alle reviews");
+            console.log(reviewData);
+        };
         
         //add a few campgrounds
         for (const seed of data) {
@@ -186,6 +314,8 @@ async function seedDB(){
             vCampgroundschema.CreatedAt     =  seed.CreatedAt;
             vCampgroundschema.comments      =  [];
             vCampgroundschema.likes         =  [];
+            // vCampgroundschema.rating        = Math.floor(Math.random() * 5);
+            vCampgroundschema.rating        = 0;
     
             // Determine a random user
             var vRandomUser = Math.floor(Math.random() * (allUsers.length-1));
@@ -224,6 +354,44 @@ async function seedDB(){
                 i++;
             };
             let campground = await Campground.create(vCampgroundschema);
+
+            // I want to randomly determine if I need to add 1 or more reviews
+            // For test purposes I also need campgrounds without review
+            if (random_boolean = Math.random() >= 0.6) {
+                // Now generatie reviews for all campgrounds
+                // Store all the campground._id in an array of reviews
+                // Read the review test data file
+                // Loop through the campgrounds and one or more reviews to the review schema
+                let temp_campgroundid = campground._id;
+                // Create max 3 reviews
+
+                // If you want to generate a random number between 1 and 5 always add 1
+                for (let i = 0; i <= (Math.floor(Math.random() * 5) + 1); i++) {
+                    reviewSchema.rating     = Math.floor(Math.random() * 5) + 1;
+                    reviewSchema.text       = reviewData[Math.floor(Math.random() * (reviewData.length-1))].text;
+                    reviewSchema.campground = temp_campgroundid;
+                    // Determine a random user
+                    var vRandomUser = Math.floor(Math.random() * (allUsers.length-1));
+                    var vAuthor = {
+                        id: allUsers[vRandomUser]._id,
+                        username: allUsers[vRandomUser].username
+                    };
+                    reviewSchema.author = vAuthor;
+                    if (process.env.DEBUG==="1") {
+                        console.log(reviewSchema.rating);
+                        console.log(reviewSchema.text);
+                        console.log(reviewSchema.campground);
+                        console.log(reviewSchema.Author);
+                    }
+                    let review = await Review.create(reviewSchema);  
+                    campground.reviews.push(review);
+                    // calculate the new average review for the campground
+                    campground.rating = calculateAverage(campground.reviews);
+                };
+                //save campground
+                campground.save();
+            };
+
         };
 
         // Create some followers for each user
@@ -240,7 +408,7 @@ async function seedDB(){
             };
             // Generate two followers
             // Remove all existing followers
-            let remuser = await User.updateOne({_id: user._id}, { $set: { followers: [] }});
+            let remuser = await User.updateOne({ _id: user._id}, { $set: { followers: [] }});
             for (i = 0; i<2; i++) {
                 // Determine a random user
                 // Check of ID already exists in followers
@@ -253,12 +421,14 @@ async function seedDB(){
                         console.log("Random bepaalde follower" + allUsers[vRandomUser]._id);
                         console.log("Verwerkte gebruiker" + user._id);
                     };
+                    // User may not follow himself
                     if (allUsers[vRandomUser]._id != user._id) {
                         var follower = {
                             followers: allUsers[vRandomUser]._id
                         };
                         // console.log(allUsers[vRandomUser]);
-                        if (allUsers[vRandomUser].followers.indexOf(follower) === -1) {
+                        // User may not follow twice
+                        if (user.followers.indexOf(allUsers[vRandomUser]._id) === -1) {
                                 if (process.env.DEBUG===1) {
                                     console.log("Pushing");
                                 }
@@ -271,7 +441,6 @@ async function seedDB(){
             user.save();
             // Notifications
             remuser = await User.updateOne({_id: user._id}, { $set: { notifications: [] }});
-
         };
     } catch (err) {
         console.log("An error occurred creating all previous test data " + err.message);
